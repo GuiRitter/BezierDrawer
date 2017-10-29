@@ -1,15 +1,19 @@
 package io.github.guiritter.bezier_drawer;
 
+import static io.github.guiritter.bezier_drawer.Event.Type.BACKGROUND_COLOR;
 import static io.github.guiritter.bezier_drawer.Event.Type.CLICKED;
 import static io.github.guiritter.bezier_drawer.Event.Type.DRAGGED;
 import static io.github.guiritter.bezier_drawer.Event.Type.PRESSED;
 import static io.github.guiritter.bezier_drawer.Event.Type.RELEASED;
+import java.awt.image.WritableRaster;
 import java.util.LinkedList;
 import java.util.concurrent.Semaphore;
 
 public final class Handler implements Runnable{
 
     private final LinkedList<Point> BézierControlPointList = new LinkedList();
+
+    public int color[] = new int[4];
 
     private Event event;
 
@@ -19,6 +23,8 @@ public final class Handler implements Runnable{
 
     private Point pointSelected = null;
 
+    public WritableRaster raster;
+
     private final Semaphore semaphore = new Semaphore(0, true);
 
     private final int width;
@@ -27,22 +33,27 @@ public final class Handler implements Runnable{
 
     private int y;
 
-    void clicked(int x, int y) {
+    void onBackgroundColorChanged(WritableRaster raster, int color[]) {
+        eventList.add(new Event(BACKGROUND_COLOR, raster, color));
+        semaphore.release();
+    }
+
+    void onMouseClicked(int x, int y) {
         eventList.add(new Event(CLICKED, x, y));
         semaphore.release();
     }
 
-    void dragged(int x, int y) {
+    void onMouseDragged(int x, int y) {
         eventList.add(new Event(DRAGGED, x, y));
         semaphore.release();
     }
 
-    void pressed(int x, int y) {
+    void onMousePressed(int x, int y) {
         eventList.add(new Event(PRESSED, x, y));
         semaphore.release();
     }
 
-    void released() {
+    void onMouseReleased() {
         eventList.add(new Event(RELEASED, 0, 0));
         semaphore.release();
     }
@@ -56,6 +67,15 @@ public final class Handler implements Runnable{
                 continue;
             }
             switch (event.type) {
+                case BACKGROUND_COLOR:
+                    raster = event.raster;
+                    color = event.color;
+                    for (y = 0; y < height; y++) {
+                        for (x = 0; x < width; x++) {
+                            raster.setPixel(x, y, color);
+                        }
+                    }
+                    break;
                 case CLICKED:
                     BézierDrawer.addPoint(event.x, event.y);
                     break;

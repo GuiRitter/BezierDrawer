@@ -7,6 +7,8 @@ import javax.swing.JFrame;
 
 public final class BézierDrawer {
 
+    private static final int backgroundColor[] = new int[]{255, 255, 255, 0};
+
     private static final LinkedList<Point> BézierControlPointList = new LinkedList();
 
     private static final int curveColor[] = new int[]{0, 0, 0, 255};
@@ -36,6 +38,15 @@ public final class BézierDrawer {
         list.addAll(BézierControlPointList);
         step.value = BézierDrawer.step.value;
         System.arraycopy(BézierDrawer.curveColor, 0, point.color, 0, 4);
+        semaphore.release();
+    }
+
+    static void setBackgroundColor(int r, int g, int b, int a) {
+        semaphore.acquireUninterruptibly();
+        backgroundColor[0] = r;
+        backgroundColor[1] = g;
+        backgroundColor[2] = b;
+        backgroundColor[3] = a;
         semaphore.release();
     }
 
