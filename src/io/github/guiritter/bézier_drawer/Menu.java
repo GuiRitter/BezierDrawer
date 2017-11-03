@@ -16,6 +16,7 @@ import javax.swing.JFileChooser;
 import static javax.swing.JFileChooser.APPROVE_OPTION;
 import javax.swing.JFrame;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import static javax.swing.JOptionPane.OK_CANCEL_OPTION;
 import static javax.swing.JOptionPane.OK_OPTION;
 import static javax.swing.JOptionPane.QUESTION_MESSAGE;
@@ -61,6 +62,8 @@ public final class Menu {
     private final LinkedList<JMenuItem> pointItemList = new LinkedList<>();
 
     private final JSpinner spinner = new JSpinner();
+
+    private String string;
 
     public Menu(
      Edit edit,
@@ -211,6 +214,21 @@ public final class Menu {
             pointSelectedWrapper.value.color[1] = colorColor.getGreen();
             pointSelectedWrapper.value.color[2] = colorColor.getBlue();
             pointSelectedWrapper.value.color[3] = colorColor.getAlpha();
+        });
+        menu.add(item);
+        pointItemList.add(item);
+
+        item = new JMenuItem("set point radius");
+        item.addActionListener((ActionEvent e) -> {
+            if (pointSelectedWrapper.value == null) {
+                return;
+            }
+            try {
+                string = JOptionPane.showInputDialog(editFrame, "insert the new point radius:", "set point radius", QUESTION_MESSAGE);
+                pointSelectedWrapper.value.radius = Integer.parseInt(string);
+            } catch (NumberFormatException ex) {
+                edit.showWarning(ex);
+            }
         });
         menu.add(item);
         pointItemList.add(item);

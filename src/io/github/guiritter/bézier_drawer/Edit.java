@@ -17,6 +17,7 @@ import javax.swing.JFrame;
 import static javax.swing.JFrame.EXIT_ON_CLOSE;
 import javax.swing.JOptionPane;
 import static javax.swing.JOptionPane.ERROR_MESSAGE;
+import static javax.swing.JOptionPane.WARNING_MESSAGE;
 
 @SuppressWarnings("CallToPrintStackTrace")
 public final class Edit {
@@ -49,9 +50,17 @@ public final class Edit {
 
     private int width;
 
-    public void showError(Exception ex) {
+    public void showDialog(Exception ex, String title, int messageType) {
         ex.printStackTrace();
-        JOptionPane.showMessageDialog(frame, ex.getLocalizedMessage(), "error", ERROR_MESSAGE);
+        JOptionPane.showMessageDialog(frame, ex.getLocalizedMessage(), title, messageType);
+    }
+
+    public void showError(Exception ex) {
+        showDialog(ex, "error", ERROR_MESSAGE);
+    }
+
+    public void showWarning(Exception ex) {
+        showDialog(ex, "warning", WARNING_MESSAGE);
     }
 
     public void setBackgroundColor() {
