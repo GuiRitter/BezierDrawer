@@ -25,6 +25,12 @@ public final class BézierDrawer {
         semaphore.release();
     }
 
+    static void addPoint(int x, int y, int i) {
+        semaphore.acquireUninterruptibly();
+        BézierControlPointList.add(i, new Point(x, y, setupFrame.getNewPointColor(), setupFrame.getNewPointRadius()));
+        semaphore.release();
+    }
+
     static int getPointAmount() {
         semaphore.acquireUninterruptibly();
         int returnInt = BézierControlPointList.size();

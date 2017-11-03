@@ -32,13 +32,15 @@ public final class EditFrame {
 
     private WritableRaster foregroundRaster;
 
+    final JFrame frame;
+
     private Handler handler;
 
     private int height;
 
-    private ImageComponentMultiple imageComponent;
+    ImageComponentMultiple imageComponent;
 
-    final JFrame frame;
+    private final Point lastPoint = new Point(0, 0, new int[4], 0);
 
     private int width;
 
@@ -99,6 +101,12 @@ public final class EditFrame {
                 public void mouseDragged(MouseEvent e) {
                     handler.onMouseDragged(e.getX(), e.getY());
                 }
+
+                @Override
+                public void mouseMoved(MouseEvent e) {
+                    lastPoint.x = e.getX();
+                    lastPoint.y = e.getY();
+                }
             });
             frame.getContentPane().removeAll();
             frame.getContentPane().add(imageComponent);
@@ -106,7 +114,7 @@ public final class EditFrame {
             frame.repaint();
             (new Timer(Renderer.class.getSimpleName())).scheduleAtFixedRate(new Renderer(foregroundRaster, imageComponent), 0, 34);
             (new Thread(handler = new Handler(width, height, backgroundColorRaster))).start();
-            imageComponent.setComponentPopupMenu((new Menu(this, handler, backgroundColorRaster)).menu);
+            imageComponent.setComponentPopupMenu((new Menu(this, handler, backgroundColorRaster, lastPoint)).menu);
         });
         frame.getContentPane().add(button);
 

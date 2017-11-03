@@ -43,6 +43,11 @@ public final class Handler implements Runnable{
         semaphore.release();
     }
 
+    void onMouseClicked(int x, int y, int i) {
+        eventList.add(new Event(CLICKED, x, y, i));
+        semaphore.release();
+    }
+
     void onMouseDragged(int x, int y) {
         eventList.add(new Event(DRAGGED, x, y));
         semaphore.release();
@@ -76,7 +81,11 @@ public final class Handler implements Runnable{
                     }
                     break;
                 case CLICKED:
-                    BézierDrawer.addPoint(event.x, event.y);
+                    if (event.i > -1) {
+                        BézierDrawer.addPoint(event.x, event.y, event.i);
+                    } else {
+                        BézierDrawer.addPoint(event.x, event.y);
+                    }
                     break;
                 case DRAGGED:
                     if (pointSelected == null) {

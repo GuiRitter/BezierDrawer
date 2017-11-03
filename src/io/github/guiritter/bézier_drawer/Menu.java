@@ -36,6 +36,10 @@ public final class Menu {
 
     private final Handler handler;
 
+    private final Point lastPoint = new Point(0, 0, colorInt, 0);
+
+    private final Point lastPointTransient;
+
     final JPopupMenu menu;
 
     private int option;
@@ -44,31 +48,46 @@ public final class Menu {
 
     private final JSpinner spinner = new JSpinner();
 
-    public Menu(EditFrame edit, Handler handler, WritableRaster backgroundRaster) {
+    public Menu(EditFrame edit, Handler handler, WritableRaster backgroundRaster, Point lastPoint) {
         this.edit = edit;
         this.handler = handler;
         this.backgroundRaster = backgroundRaster;
+        this.lastPointTransient = lastPoint;
         menu = new JPopupMenu(){
 
             @Override
             public void setVisible(boolean b) {
-                if (getParent() != null) {
-                    System.out.print(
-                     getParent().getBounds() + "\t" +
-                     getParent().getLocation() + "\t" +
-                     getParent().getMousePosition() + "\t" +
-                     getParent().getX() + "\t" +
-                     getParent().getY() + "\t");
+//                if ((!b) && (getParent() != null)) {
+//                    // doesn't work near the right and bottom edges
+//                    java.awt.Point point = getParent().getLocation();
+//                    SwingUtilities.convertPointFromScreen(point, edit.imageComponent);
+//                    System.out.println(point);
+//                }
+                if ((!b) && (getParent() != null)) {
+                    Menu.this.lastPoint.x = lastPointTransient.x;
+                    Menu.this.lastPoint.y = lastPointTransient.y;
                 }
+//                if (getParent() != null) {
+//                    System.out.println(
+//                     b + "\t" +
+//                     "before\t" +
+//                     getParent().getBounds() + "\t" +
+//                     getParent().getLocation() + "\t" +
+//                     getParent().getMousePosition() + "\t" +
+//                     getParent().getX() + "\t" +
+//                     getParent().getY());
+//                }
                 super.setVisible(b); //To change body of generated methods, choose Tools | Templates.
-                if (getParent() != null) {
-                    System.out.println(
-                     getParent().getBounds() + "\t" +
-                     getParent().getLocation() + "\t" +
-                     getParent().getMousePosition() + "\t" +
-                     getParent().getX() + "\t" +
-                     getParent().getY());
-                }
+//                if (getParent() != null) {
+//                    System.out.println(
+//                     b + "\t" +
+//                     "after\t" +
+//                     getParent().getBounds() + "\t" +
+//                     getParent().getLocation() + "\t" +
+//                     getParent().getMousePosition() + "\t" +
+//                     getParent().getX() + "\t" +
+//                     getParent().getY());
+//                }
             }
 
 //            @Override
@@ -86,8 +105,7 @@ public final class Menu {
             if (option != OK_OPTION) {
                 return;
             }
-//            System.out.println(point);
-            // TODO
+            handler.onMouseClicked(lastPoint.x, lastPoint.y, ((SpinnerNumberModel) spinner.getModel()).getNumber().intValue());
         });
         menu.add(item);
 
@@ -136,6 +154,11 @@ public final class Menu {
              colorColor.getAlpha()
             );
         });
+        menu.add(item);
+
+        menu.addSeparator();
+
+        item = new JMenuItem("cancel");
         menu.add(item);
     }
 }

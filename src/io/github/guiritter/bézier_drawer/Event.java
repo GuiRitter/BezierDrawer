@@ -13,6 +13,8 @@ public final class Event {
 
     public final int color[] = new int[4];
 
+    public final int i;
+
     public final Type type;
 
     public final int x;
@@ -22,6 +24,7 @@ public final class Event {
     public Event(Type type, int color[]) {
         this.type = type;
         System.arraycopy(color, 0, this.color, 0, color.length);
+        this.i = -1;
         this.x = 0;
         this.y = 0;
     }
@@ -30,5 +33,13 @@ public final class Event {
         this.type = type;
         this.x = x;
         this.y = y;
+        this.i = -1;
+    }
+
+    public Event(Type type, int x, int y, int i) {
+        this.type = type;
+        this.x = x;
+        this.y = y;
+        this.i = i;
     }
 }
