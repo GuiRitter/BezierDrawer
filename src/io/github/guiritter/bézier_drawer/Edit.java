@@ -80,6 +80,7 @@ public final class Edit {
         frame.setDefaultCloseOperation(EXIT_ON_CLOSE);
 
         JButton button = new JButton("initialize");
+//        button.setFont(button.getFont().deriveFont(button.getFont().getStyle() | BOLD)); // TODO to be used elsewhere
         button.addActionListener((ActionEvent e) -> {
 
             width = button.getWidth();

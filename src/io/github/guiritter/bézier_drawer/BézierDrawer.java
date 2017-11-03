@@ -1,11 +1,13 @@
 package io.github.guiritter.bézier_drawer;
 
 import java.awt.Dimension;
+import java.awt.Font;
 import java.util.LinkedList;
 import java.util.concurrent.Semaphore;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.UIManager;
 
 public final class BézierDrawer {
 
@@ -14,6 +16,8 @@ public final class BézierDrawer {
     private static final LinkedList<Point> BézierControlPointList = new LinkedList();
 
     private static final int curveColor[] = new int[]{0, 0, 0, 255};
+
+    public static final Font font = new Font("DejaVu Sans", 0, 12); // NOI18N
 
     private static final Semaphore semaphore = new Semaphore(1, true);
 
@@ -97,6 +101,15 @@ public final class BézierDrawer {
     static {
         JFrame.setDefaultLookAndFeelDecorated(true);
         JDialog.setDefaultLookAndFeelDecorated(true);
+        UIManager.put("Button.font",             font);
+        UIManager.put("CheckBox.font",           font);
+        UIManager.put("ComboBox.font",           font);
+        UIManager.put("InternalFrame.titleFont", font);
+        UIManager.put("Label.font",              font);
+        UIManager.put("List.font",               font);
+        UIManager.put("MenuItem.font",           font);
+        UIManager.put("TextField.font",          font);
+        UIManager.put("ToolTip.font",            font);
         JLabel label = new JLabel("—");
         SPACE_INT = Math.min(
          label.getPreferredSize().width,
