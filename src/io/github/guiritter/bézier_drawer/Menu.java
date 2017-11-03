@@ -191,7 +191,26 @@ public final class Menu {
 
         item = new JMenuItem("remove point");
         item.addActionListener((ActionEvent e) -> {
-            removePoint(pointSelectedWrapper.value);
+            if (pointSelectedWrapper.value != null) {
+                removePoint(pointSelectedWrapper.value);
+            }
+        });
+        menu.add(item);
+        pointItemList.add(item);
+
+        item = new JMenuItem("set point color");
+        item.addActionListener((ActionEvent e) -> {
+            if (pointSelectedWrapper.value == null) {
+                return;
+            }
+            colorColor = showDialog(editFrame, "choose curve color", null);
+            if (colorColor == null) {
+                return;
+            }
+            pointSelectedWrapper.value.color[0] = colorColor.getRed();
+            pointSelectedWrapper.value.color[1] = colorColor.getGreen();
+            pointSelectedWrapper.value.color[2] = colorColor.getBlue();
+            pointSelectedWrapper.value.color[3] = colorColor.getAlpha();
         });
         menu.add(item);
         pointItemList.add(item);
