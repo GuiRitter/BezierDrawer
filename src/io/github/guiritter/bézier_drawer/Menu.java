@@ -1,16 +1,20 @@
 package io.github.guiritter.bézier_drawer;
 
 import static io.github.guiritter.bézier_drawer.BézierDrawer.getPointAmount;
+import static io.github.guiritter.bézier_drawer.BézierDrawer.removePoint;
 import static io.github.guiritter.bézier_drawer.BézierDrawer.setCurveColor;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.image.WritableRaster;
 import java.io.File;
 import java.io.IOException;
+import java.util.LinkedList;
+import java.util.concurrent.Semaphore;
 import javax.imageio.ImageIO;
 import static javax.swing.JColorChooser.showDialog;
 import javax.swing.JFileChooser;
 import static javax.swing.JFileChooser.APPROVE_OPTION;
+import javax.swing.JFrame;
 import javax.swing.JMenuItem;
 import static javax.swing.JOptionPane.OK_CANCEL_OPTION;
 import static javax.swing.JOptionPane.OK_OPTION;
@@ -30,7 +34,11 @@ public final class Menu {
 
     private Color colorColor;
 
-    private final EditFrame edit;
+    private final Edit edit;
+
+    private final JFrame editFrame;
+
+    private final LinkedList<JMenuItem> elseItemList = new LinkedList<>();
 
     private File file;
 
@@ -46,13 +54,30 @@ public final class Menu {
 
     private Point point;
 
+    final Semaphore pointSelectedSemaphore;
+
+    private final WrapperPoint pointSelectedWrapper;
+
+    private final LinkedList<JMenuItem> pointItemList = new LinkedList<>();
+
     private final JSpinner spinner = new JSpinner();
 
-    public Menu(EditFrame edit, Handler handler, WritableRaster backgroundRaster, Point lastPoint) {
+    public Menu(
+     Edit edit,
+     JFrame editFrame,
+     Handler handler,
+     WritableRaster backgroundRaster,
+     Point lastPoint,
+     Semaphore pointSelectedSemaphore,
+     WrapperPoint pointSelectedWrapper
+    ) {
         this.edit = edit;
+        this.editFrame = editFrame;
         this.handler = handler;
         this.backgroundRaster = backgroundRaster;
         this.lastPointTransient = lastPoint;
+        this.pointSelectedSemaphore = pointSelectedSemaphore;
+        this.pointSelectedWrapper = pointSelectedWrapper;
         menu = new JPopupMenu(){
 
             @Override
@@ -66,6 +91,8 @@ public final class Menu {
                 if ((!b) && (getParent() != null)) {
                     Menu.this.lastPoint.x = lastPointTransient.x;
                     Menu.this.lastPoint.y = lastPointTransient.y;
+                    handler.onMousePressedWait(Menu.this.lastPoint.x, Menu.this.lastPoint.y);
+                    pointSelectedSemaphore.acquireUninterruptibly();
                 }
 //                if (getParent() != null) {
 //                    System.out.println(
@@ -101,17 +128,18 @@ public final class Menu {
         JMenuItem item = new JMenuItem("add point");
         item.addActionListener((ActionEvent e) -> {
             spinner.setModel(new SpinnerNumberModel(0, 0, getPointAmount(), 1));
-            option = showOptionDialog(edit.frame, spinner, "select the new point's index", OK_CANCEL_OPTION, QUESTION_MESSAGE, null, null, null);
+            option = showOptionDialog(editFrame, spinner, "select the new point's index", OK_CANCEL_OPTION, QUESTION_MESSAGE, null, null, null);
             if (option != OK_OPTION) {
                 return;
             }
             handler.onMouseClicked(lastPoint.x, lastPoint.y, ((SpinnerNumberModel) spinner.getModel()).getNumber().intValue());
         });
         menu.add(item);
+        elseItemList.add(item);
 
         item = new JMenuItem("set background color");
         item.addActionListener((ActionEvent e) -> {
-            colorColor = showDialog(edit.frame, "choose background color", null);
+            colorColor = showDialog(editFrame, "choose background color", null);
             if (colorColor == null) {
                 return;
             }
@@ -123,11 +151,12 @@ public final class Menu {
             edit.setBackgroundColor();
         });
         menu.add(item);
+        elseItemList.add(item);
 
         item = new JMenuItem("set background picture");
         item.addActionListener((ActionEvent e) -> {
             file = null;
-            if (chooser.showOpenDialog(edit.frame) != APPROVE_OPTION) {
+            if (chooser.showOpenDialog(editFrame) != APPROVE_OPTION) {
                 return;
             }
             if ((file = chooser.getSelectedFile()) == null) {
@@ -140,10 +169,11 @@ public final class Menu {
             }
         });
         menu.add(item);
+        elseItemList.add(item);
 
         item = new JMenuItem("set curve color");
         item.addActionListener((ActionEvent e) -> {
-            colorColor = showDialog(edit.frame, "choose curve color", null);
+            colorColor = showDialog(editFrame, "choose curve color", null);
             if (colorColor == null) {
                 return;
             }
@@ -155,6 +185,16 @@ public final class Menu {
             );
         });
         menu.add(item);
+        elseItemList.add(item);
+
+        menu.addSeparator();
+
+        item = new JMenuItem("remove point");
+        item.addActionListener((ActionEvent e) -> {
+            removePoint(pointSelectedWrapper.value);
+        });
+        menu.add(item);
+        pointItemList.add(item);
 
         menu.addSeparator();
 

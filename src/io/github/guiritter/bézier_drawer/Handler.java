@@ -4,6 +4,7 @@ import static io.github.guiritter.bézier_drawer.Event.Type.BACKGROUND_COLOR;
 import static io.github.guiritter.bézier_drawer.Event.Type.CLICKED;
 import static io.github.guiritter.bézier_drawer.Event.Type.DRAGGED;
 import static io.github.guiritter.bézier_drawer.Event.Type.PRESSED;
+import static io.github.guiritter.bézier_drawer.Event.Type.PRESSED_WAIT;
 import static io.github.guiritter.bézier_drawer.Event.Type.RELEASED;
 import java.awt.image.WritableRaster;
 import java.util.LinkedList;
@@ -24,6 +25,10 @@ public final class Handler implements Runnable{
     private final int height;
 
     private Point pointSelected = null;
+
+    private final Semaphore pointSelectedSemaphore;
+
+    private final WrapperPoint pointSelectedWrapper;
 
     private final Semaphore semaphore = new Semaphore(0, true);
 
@@ -55,6 +60,11 @@ public final class Handler implements Runnable{
 
     void onMousePressed(int x, int y) {
         eventList.add(new Event(PRESSED, x, y));
+        semaphore.release();
+    }
+
+    void onMousePressedWait(int x, int y) {
+        eventList.add(new Event(PRESSED_WAIT, x, y));
         semaphore.release();
     }
 
@@ -100,6 +110,7 @@ public final class Handler implements Runnable{
                     pointSelected.y = y;
                     break;
                 case PRESSED:
+                case PRESSED_WAIT:
                     BézierDrawer.getPointList(BézierControlPointList);
                     pointSelected = null;
                     for (Point point : BézierControlPointList) {
@@ -108,8 +119,9 @@ public final class Handler implements Runnable{
                             break;
                         }
                     }
-                    if (pointSelected == null) {
-                        break;
+                    if (event.type == PRESSED_WAIT) {
+                        pointSelectedWrapper.value = pointSelected;
+                        pointSelectedSemaphore.release();
                     }
                     break;
                 case RELEASED:
@@ -119,9 +131,17 @@ public final class Handler implements Runnable{
         }
     }
 
-    public Handler(int width, int height, WritableRaster backgroundColorRaster) {
-        this.height = height;
+    public Handler(
+     int width,
+     int height,
+     WritableRaster backgroundColorRaster,
+     Semaphore pointSelectedSemaphore,
+     WrapperPoint pointSelectedWrapper
+    ) {
         this.width = width;
+        this.height = height;
         this.backgroundColorRaster = backgroundColorRaster;
+        this.pointSelectedSemaphore = pointSelectedSemaphore;
+        this.pointSelectedWrapper = pointSelectedWrapper;
     }
 }

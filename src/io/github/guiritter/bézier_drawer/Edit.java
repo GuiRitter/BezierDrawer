@@ -11,6 +11,7 @@ import static java.awt.image.BufferedImage.TYPE_INT_ARGB;
 import java.awt.image.WritableRaster;
 import java.util.LinkedList;
 import java.util.Timer;
+import java.util.concurrent.Semaphore;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import static javax.swing.JFrame.EXIT_ON_CLOSE;
@@ -18,7 +19,7 @@ import javax.swing.JOptionPane;
 import static javax.swing.JOptionPane.ERROR_MESSAGE;
 
 @SuppressWarnings("CallToPrintStackTrace")
-public final class EditFrame {
+public final class Edit {
 
     private BufferedImage backgroundColorImage;
 
@@ -38,9 +39,13 @@ public final class EditFrame {
 
     private int height;
 
-    ImageComponentMultiple imageComponent;
+    private ImageComponentMultiple imageComponent;
 
     private final Point lastPoint = new Point(0, 0, new int[4], 0);
+
+    private final Semaphore pointSelectedSemaphore = new Semaphore(0, true);
+
+    private final WrapperPoint pointSelectedWrapper = new WrapperPoint();
 
     private int width;
 
@@ -61,7 +66,7 @@ public final class EditFrame {
         frame.repaint();
     }
 
-    public EditFrame() {
+    public Edit() {
         frame = new JFrame("Bézier Drawer · Edit");
         frame.setDefaultCloseOperation(EXIT_ON_CLOSE);
 
@@ -113,8 +118,8 @@ public final class EditFrame {
             frame.revalidate();
             frame.repaint();
             (new Timer(Renderer.class.getSimpleName())).scheduleAtFixedRate(new Renderer(foregroundRaster, imageComponent), 0, 34);
-            (new Thread(handler = new Handler(width, height, backgroundColorRaster))).start();
-            imageComponent.setComponentPopupMenu((new Menu(this, handler, backgroundColorRaster, lastPoint)).menu);
+            (new Thread(handler = new Handler(width, height, backgroundColorRaster, pointSelectedSemaphore, pointSelectedWrapper))).start();
+            imageComponent.setComponentPopupMenu((new Menu(this, frame, handler, backgroundColorRaster, lastPoint, pointSelectedSemaphore, pointSelectedWrapper)).menu);
         });
         frame.getContentPane().add(button);
 

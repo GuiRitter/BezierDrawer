@@ -15,7 +15,7 @@ public final class BézierDrawer {
 
     private static final Semaphore semaphore = new Semaphore(1, true);
 
-    private static final SetupFrame setupFrame = new SetupFrame();
+    private static final Setup setupFrame = new Setup();
 
     private static final WrapperDouble step = new WrapperDouble(0.001);
 
@@ -54,6 +54,12 @@ public final class BézierDrawer {
         semaphore.release();
     }
 
+    static void removePoint(Point point) {
+        semaphore.acquireUninterruptibly();
+        BézierControlPointList.remove(point);
+        semaphore.release();
+    }
+
     static void setBackgroundColor(int r, int g, int b, int a) {
         semaphore.acquireUninterruptibly();
         backgroundColor[0] = r;
@@ -84,6 +90,6 @@ public final class BézierDrawer {
     }
 
     public static void main(String args[]) {
-        new EditFrame();
+        new Edit();
     }
 }

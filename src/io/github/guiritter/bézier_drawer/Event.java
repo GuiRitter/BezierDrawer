@@ -8,6 +8,7 @@ public final class Event {
         CLICKED,
         DRAGGED,
         PRESSED,
+        PRESSED_WAIT,
         RELEASED
     }
 
