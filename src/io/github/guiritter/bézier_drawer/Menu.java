@@ -16,10 +16,10 @@ import javax.swing.JFileChooser;
 import static javax.swing.JFileChooser.APPROVE_OPTION;
 import javax.swing.JFrame;
 import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
 import static javax.swing.JOptionPane.OK_CANCEL_OPTION;
 import static javax.swing.JOptionPane.OK_OPTION;
 import static javax.swing.JOptionPane.QUESTION_MESSAGE;
+import static javax.swing.JOptionPane.showInputDialog;
 import static javax.swing.JOptionPane.showOptionDialog;
 import javax.swing.JPopupMenu;
 import javax.swing.JSpinner;
@@ -55,17 +55,21 @@ public final class Menu {
 
     private Point point;
 
+    private final LinkedList<JMenuItem> pointItemList = new LinkedList<>();
+
     final Semaphore pointSelectedSemaphore;
 
     private final WrapperPoint pointSelectedWrapper;
 
-    private final LinkedList<JMenuItem> pointItemList = new LinkedList<>();
+    private final PositionPanel positionPanel;
 
     private final JSpinner spinner = new JSpinner();
 
     private String string;
 
     public Menu(
+     int width,
+     int height,
      Edit edit,
      JFrame editFrame,
      Handler handler,
@@ -81,6 +85,7 @@ public final class Menu {
         this.lastPointTransient = lastPoint;
         this.pointSelectedSemaphore = pointSelectedSemaphore;
         this.pointSelectedWrapper = pointSelectedWrapper;
+        positionPanel = new PositionPanel(width, height);
         menu = new JPopupMenu(){
 
             @Override
@@ -218,13 +223,28 @@ public final class Menu {
         menu.add(item);
         pointItemList.add(item);
 
+        item = new JMenuItem("set point position");
+        item.addActionListener((ActionEvent e) -> {
+            if (pointSelectedWrapper.value == null) {
+                return;
+            }
+            option = showOptionDialog(editFrame, positionPanel.panel, "insert new point position", OK_CANCEL_OPTION, QUESTION_MESSAGE, null, null, null);
+            if (option != OK_OPTION) {
+                return;
+            }
+            pointSelectedWrapper.value.x = positionPanel.getX();
+            pointSelectedWrapper.value.y = positionPanel.getY();
+        });
+        menu.add(item);
+        pointItemList.add(item);
+
         item = new JMenuItem("set point radius");
         item.addActionListener((ActionEvent e) -> {
             if (pointSelectedWrapper.value == null) {
                 return;
             }
             try {
-                string = JOptionPane.showInputDialog(editFrame, "insert the new point radius:", "set point radius", QUESTION_MESSAGE);
+                string = showInputDialog(editFrame, "insert the new point radius:", "set point radius", QUESTION_MESSAGE);
                 pointSelectedWrapper.value.radius = Integer.parseInt(string);
             } catch (NumberFormatException ex) {
                 edit.showWarning(ex);

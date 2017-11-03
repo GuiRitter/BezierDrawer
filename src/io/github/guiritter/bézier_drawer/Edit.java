@@ -128,7 +128,7 @@ public final class Edit {
             frame.repaint();
             (new Timer(Renderer.class.getSimpleName())).scheduleAtFixedRate(new Renderer(foregroundRaster, imageComponent), 0, 34);
             (new Thread(handler = new Handler(width, height, backgroundColorRaster, pointSelectedSemaphore, pointSelectedWrapper))).start();
-            imageComponent.setComponentPopupMenu((new Menu(this, frame, handler, backgroundColorRaster, lastPoint, pointSelectedSemaphore, pointSelectedWrapper)).menu);
+            imageComponent.setComponentPopupMenu((new Menu(width, height, this, frame, handler, backgroundColorRaster, lastPoint, pointSelectedSemaphore, pointSelectedWrapper)).menu);
         });
         frame.getContentPane().add(button);
 

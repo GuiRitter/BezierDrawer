@@ -1,9 +1,11 @@
 package io.github.guiritter.bézier_drawer;
 
+import java.awt.Dimension;
 import java.util.LinkedList;
 import java.util.concurrent.Semaphore;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 
 public final class BézierDrawer {
 
@@ -18,6 +20,14 @@ public final class BézierDrawer {
     private static final Setup setupFrame = new Setup();
 
     private static final WrapperDouble step = new WrapperDouble(0.001);
+
+    public static final int SPACE_INT;
+
+    public static final Dimension SPACE_DIMENSION;
+
+    public static final int SPACE_HALF_INT;
+
+    public static final Dimension SPACE_HALF_DIMENSION;
 
     static void addPoint(int x, int y) {
         semaphore.acquireUninterruptibly();
@@ -87,6 +97,13 @@ public final class BézierDrawer {
     static {
         JFrame.setDefaultLookAndFeelDecorated(true);
         JDialog.setDefaultLookAndFeelDecorated(true);
+        JLabel label = new JLabel("—");
+        SPACE_INT = Math.min(
+         label.getPreferredSize().width,
+         label.getPreferredSize().height);
+        SPACE_HALF_INT = SPACE_INT / 2;
+        SPACE_DIMENSION = new Dimension(SPACE_INT, SPACE_INT);
+        SPACE_HALF_DIMENSION = new Dimension(SPACE_HALF_INT, SPACE_HALF_INT);
     }
 
     public static void main(String args[]) {
