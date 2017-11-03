@@ -25,6 +25,13 @@ public final class BézierDrawer {
         semaphore.release();
     }
 
+    static int getPointAmount() {
+        semaphore.acquireUninterruptibly();
+        int returnInt = BézierControlPointList.size();
+        semaphore.release();
+        return returnInt;
+    }
+
     static void getPointList(LinkedList<Point> list) {
         semaphore.acquireUninterruptibly();
         list.clear();

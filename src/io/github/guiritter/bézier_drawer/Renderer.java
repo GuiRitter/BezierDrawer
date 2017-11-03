@@ -61,7 +61,6 @@ public final class Renderer extends  TimerTask{
                 raster.setPixel(x, y, transparency);
             }
         }
-        // TODO plot Bézier curve
         for (t = 0; t <= 1; t += step.value) {
             curve.op(t);
             raster.setPixel(point.x, point.y, point.color);
