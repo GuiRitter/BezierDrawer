@@ -48,6 +48,8 @@ public final class Edit {
 
     private final WrapperPoint pointSelectedWrapper = new WrapperPoint();
 
+    private final Setup setup;
+
     private int width;
 
     public void showDialog(Exception ex, String title, int messageType) {
@@ -75,7 +77,8 @@ public final class Edit {
         frame.repaint();
     }
 
-    public Edit() {
+    public Edit(Setup setup) {
+        this.setup = setup;
         frame = new JFrame("Bézier Drawer · Edit");
         frame.setDefaultCloseOperation(EXIT_ON_CLOSE);
 
@@ -128,7 +131,7 @@ public final class Edit {
             frame.revalidate();
             frame.repaint();
             (new Timer(Renderer.class.getSimpleName())).scheduleAtFixedRate(new Renderer(foregroundRaster, imageComponent), 0, 34);
-            (new Thread(handler = new Handler(width, height, backgroundColorRaster, pointSelectedSemaphore, pointSelectedWrapper))).start();
+            (new Thread(handler = new Handler(width, height, setup, backgroundColorRaster, pointSelectedSemaphore, pointSelectedWrapper))).start();
             imageComponent.setComponentPopupMenu((new Menu(width, height, this, frame, handler, backgroundColorRaster, lastPoint, pointSelectedSemaphore, pointSelectedWrapper)).menu);
         });
         frame.getContentPane().add(button);

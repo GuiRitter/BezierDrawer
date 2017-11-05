@@ -21,7 +21,7 @@ public final class BézierDrawer {
 
     private static final Semaphore semaphore = new Semaphore(1, true);
 
-    private static final Setup setupFrame = new Setup();
+    private static final Setup setup;
 
     private static final WrapperDouble step = new WrapperDouble(0.001);
 
@@ -35,13 +35,15 @@ public final class BézierDrawer {
 
     static void addPoint(int x, int y) {
         semaphore.acquireUninterruptibly();
-        BézierControlPointList.add(new Point(x, y, setupFrame.getNewPointColor(), setupFrame.getNewPointRadius()));
+        BézierControlPointList.add(new Point(x, y, setup.getNewPointColor(), setup.getNewPointRadius()));
+        setup.addPoint(x, y);
         semaphore.release();
     }
 
     static void addPoint(int x, int y, int i) {
         semaphore.acquireUninterruptibly();
-        BézierControlPointList.add(i, new Point(x, y, setupFrame.getNewPointColor(), setupFrame.getNewPointRadius()));
+        BézierControlPointList.add(i, new Point(x, y, setup.getNewPointColor(), setup.getNewPointRadius()));
+        setup.addPoint(x, y, i);
         semaphore.release();
     }
 
@@ -70,6 +72,7 @@ public final class BézierDrawer {
 
     static void removePoint(Point point) {
         semaphore.acquireUninterruptibly();
+        setup.removePoint(BézierControlPointList.indexOf(point));
         BézierControlPointList.remove(point);
         semaphore.release();
     }
@@ -117,9 +120,11 @@ public final class BézierDrawer {
         SPACE_HALF_INT = SPACE_INT / 2;
         SPACE_DIMENSION = new Dimension(SPACE_INT, SPACE_INT);
         SPACE_HALF_DIMENSION = new Dimension(SPACE_HALF_INT, SPACE_HALF_INT);
+
+        setup = new Setup();
     }
 
     public static void main(String args[]) {
-        new Edit();
+        new Edit(setup);
     }
 }

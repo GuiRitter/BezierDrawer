@@ -22,6 +22,8 @@ public final class Point {
     @Override
     public String toString() {
         return String.format("x: %d\ty: %d\tcolor: %s\tradius: %d", x, y, Arrays.toString(color), radius);
+//        return String.format("<html><pre>x: %d\ty: %d\tcolor: %s\tradius: %d</pre></html>", x, y, Arrays.toString(color), radius);;
+//        return String.format("<html>x: %d\ty: %d\tcolor: %s\tradius: %d</html>", x, y, Arrays.toString(color), radius);
     }
 
     public Point(int x, int y, int color[], int radius) {

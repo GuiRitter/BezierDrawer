@@ -26,11 +26,15 @@ public final class Handler implements Runnable{
 
     private Point pointSelected = null;
 
+    private int pointSelectedIndex;
+
     private final Semaphore pointSelectedSemaphore;
 
     private final WrapperPoint pointSelectedWrapper;
 
     private final Semaphore semaphore = new Semaphore(0, true);
+
+    private final Setup setup;
 
     private final int width;
 
@@ -108,6 +112,7 @@ public final class Handler implements Runnable{
                     }
                     pointSelected.x = x;
                     pointSelected.y = y;
+                    setup.setPoint(pointSelectedIndex, x, y);
                     break;
                 case PRESSED:
                 case PRESSED_WAIT:
@@ -118,6 +123,9 @@ public final class Handler implements Runnable{
                             pointSelected = point;
                             break;
                         }
+                    }
+                    if (pointSelected != null) {
+                        pointSelectedIndex = BézierControlPointList.indexOf(pointSelected);
                     }
                     if (event.type == PRESSED_WAIT) {
                         pointSelectedWrapper.value = pointSelected;
@@ -134,12 +142,14 @@ public final class Handler implements Runnable{
     public Handler(
      int width,
      int height,
+     Setup setup,
      WritableRaster backgroundColorRaster,
      Semaphore pointSelectedSemaphore,
      WrapperPoint pointSelectedWrapper
     ) {
         this.width = width;
         this.height = height;
+        this.setup = setup;
         this.backgroundColorRaster = backgroundColorRaster;
         this.pointSelectedSemaphore = pointSelectedSemaphore;
         this.pointSelectedWrapper = pointSelectedWrapper;
