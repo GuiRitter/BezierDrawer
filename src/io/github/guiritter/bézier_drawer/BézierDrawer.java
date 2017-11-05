@@ -15,6 +15,8 @@ public final class BézierDrawer {
 
     private static final LinkedList<Point> BézierControlPointList = new LinkedList();
 
+    private static int color[];
+
     private static final int curveColor[] = new int[]{0, 0, 0, 255};
 
     public static final Font font = new Font("DejaVu Sans", 0, 12); // NOI18N
@@ -35,15 +37,17 @@ public final class BézierDrawer {
 
     static void addPoint(int x, int y) {
         semaphore.acquireUninterruptibly();
-        BézierControlPointList.add(new Point(x, y, setup.getNewPointColor(), setup.getNewPointRadius()));
-        setup.addPoint(x, y);
+        color = setup.getNewPointColor();
+        BézierControlPointList.add(new Point(x, y, color, setup.getNewPointRadius()));
+        setup.addPoint(x, y, color);
         semaphore.release();
     }
 
     static void addPoint(int x, int y, int i) {
         semaphore.acquireUninterruptibly();
-        BézierControlPointList.add(i, new Point(x, y, setup.getNewPointColor(), setup.getNewPointRadius()));
-        setup.addPoint(x, y, i);
+        color = setup.getNewPointColor();
+        BézierControlPointList.add(i, new Point(x, y, color, setup.getNewPointRadius()));
+        setup.addPoint(x, y, color, i);
         semaphore.release();
     }
 

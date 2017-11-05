@@ -1,5 +1,7 @@
 package io.github.guiritter.bézier_drawer;
 
+import java.awt.Color;
+import java.awt.Component;
 import java.awt.GridBagConstraints;
 import static java.awt.GridBagConstraints.BOTH;
 import static java.awt.GridBagConstraints.HORIZONTAL;
@@ -7,6 +9,7 @@ import static java.awt.GridBagConstraints.NORTH;
 import static java.awt.GridBagConstraints.SOUTH;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.util.Arrays;
 import javax.swing.JButton;
 import javax.swing.JFormattedTextField;
 import javax.swing.JFrame;
@@ -16,29 +19,37 @@ import javax.swing.JScrollPane;
 import javax.swing.JSpinner;
 import javax.swing.JTable;
 import static javax.swing.JTable.AUTO_RESIZE_OFF;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
 public final class Setup {
 
     final JFrame frame;
 
+    private static final int TABLE_COLUMN_INDEX = 0;
+    private static final int TABLE_COLUMN_DISPLAY_X = 1;
+    private static final int TABLE_COLUMN_DISPLAY_Y = 2;
+    private static final int TABLE_COLUMN_OUTPUT_X = 3;
+    private static final int TABLE_COLUMN_OUTPUT_Y = 4;
+    private static final int TABLE_COLUMN_COLOR = 5;
+
     private final DefaultTableModel tableModel;
 
-    public void addPoint(int x, int y) {
-        tableModel.addRow(new Object[]{tableModel.getRowCount(), x, y, 0, 0});
+    public void addPoint(int x, int y, int color[]) {
+        tableModel.addRow(new Object[]{tableModel.getRowCount(), x, y, 0, 0, Arrays.copyOf(color, color.length)}); // TODO fit
     }
 
-    public void addPoint(int x, int y, int i) {
-        tableModel.insertRow(i, new Object[]{tableModel.getRowCount(), x, y, 0, 0});
+    public void addPoint(int x, int y, int color[], int i) {
+        tableModel.insertRow(i, new Object[]{tableModel.getRowCount(), x, y, 0, 0, Arrays.copyOf(color, color.length)}); // TODO fit
         updateIndex(i);
     }
 
     public int[] getNewPointColor() {
-        return new int[]{0, 0, 0, 255};
+        return new int[]{0, 0, 0, 255}; // TODO
     }
 
     public int getNewPointRadius() {
-        return 5;
+        return 5; // TODO
     }
 
     public void removePoint(int i) {
@@ -47,13 +58,19 @@ public final class Setup {
     }
 
     public void setPoint(int i, int x, int y) {
-        tableModel.setValueAt(x, i, 1);
-        tableModel.setValueAt(y, i, 2);
+        tableModel.setValueAt(x, i, TABLE_COLUMN_DISPLAY_X);
+        tableModel.setValueAt(y, i, TABLE_COLUMN_DISPLAY_Y);
+    }
+
+    public void setPointColor(int i, int color[]) {
+        tableModel.setValueAt(Arrays.copyOf(color, color.length), i, TABLE_COLUMN_COLOR);
+        frame.revalidate();
+        frame.repaint();
     }
 
     public void updateIndex(int i) {
         for (i = 0; i < tableModel.getRowCount(); i++) {
-            tableModel.setValueAt(i, i, 0);
+            tableModel.setValueAt(i, i, TABLE_COLUMN_INDEX);
         }
     }
 
@@ -177,15 +194,15 @@ public final class Setup {
         tableModel = new DefaultTableModel(
             new Object [][] {},
             new String [] {
-                "point", "screen x", "screen y", "output x", "output y"
+                "point", "screen x", "screen y", "output x", "output y", "color"
             }
         ) {
             Class[] types = new Class [] {
-                String.class, Integer.class, Integer.class, Double.class, Double.class
+                String.class, Integer.class, Integer.class, Double.class, Double.class, Integer[].class
             };
 
             boolean[] canEdit = new boolean [] {
-                false, true, true, false, false
+                false, true, true, false, false, false
             };
 
             @Override
@@ -199,9 +216,34 @@ public final class Setup {
             }
         };
 
-        JScrollPane tablePane = new JScrollPane();
         JTable table = new JTable();
         table.setModel(tableModel);
+        table.getColumnModel().getColumn(TABLE_COLUMN_COLOR).setMinWidth(0);
+        table.getColumnModel().getColumn(TABLE_COLUMN_COLOR).setMaxWidth(0);
+        table.setDefaultRenderer(String.class, new DefaultTableCellRenderer(){
+
+            private int color[];
+
+            private Component component;
+
+            @Override
+            public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+                component = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column); //To change body of generated methods, choose Tools | Templates.
+                if (column != TABLE_COLUMN_INDEX) {
+                    return component;
+                }
+                color = (int[]) tableModel.getValueAt(row, TABLE_COLUMN_COLOR);
+                component.setBackground(new Color(color[0], color[1], color[2], color[3]));
+                component.setForeground(new Color(
+                 (color[0] < 128) ? 255 : 0,
+                 (color[1] < 128) ? 255 : 0,
+                 (color[2] < 128) ? 255 : 0,
+                 color[3]));
+                return component;
+            }
+        });
+
+        JScrollPane tablePane = new JScrollPane();
         table.setAutoResizeMode(AUTO_RESIZE_OFF);
         tablePane.setViewportView(table);
 

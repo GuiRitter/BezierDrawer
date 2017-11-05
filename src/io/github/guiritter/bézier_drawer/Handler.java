@@ -26,8 +26,6 @@ public final class Handler implements Runnable{
 
     private Point pointSelected = null;
 
-    private int pointSelectedIndex;
-
     private final Semaphore pointSelectedSemaphore;
 
     private final WrapperPoint pointSelectedWrapper;
@@ -112,7 +110,7 @@ public final class Handler implements Runnable{
                     }
                     pointSelected.x = x;
                     pointSelected.y = y;
-                    setup.setPoint(pointSelectedIndex, x, y);
+                    setup.setPoint(pointSelectedWrapper.index, x, y);
                     break;
                 case PRESSED:
                 case PRESSED_WAIT:
@@ -125,7 +123,7 @@ public final class Handler implements Runnable{
                         }
                     }
                     if (pointSelected != null) {
-                        pointSelectedIndex = BézierControlPointList.indexOf(pointSelected);
+                        pointSelectedWrapper.index = BézierControlPointList.indexOf(pointSelected);
                     }
                     if (event.type == PRESSED_WAIT) {
                         pointSelectedWrapper.value = pointSelected;

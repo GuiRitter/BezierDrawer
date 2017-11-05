@@ -63,6 +63,8 @@ public final class Menu {
 
     private final PositionPanel positionPanel;
 
+    private final Setup setup;
+
     private final JSpinner spinner = new JSpinner();
 
     private String string;
@@ -71,6 +73,7 @@ public final class Menu {
      int width,
      int height,
      Edit edit,
+     Setup setup,
      JFrame editFrame,
      Handler handler,
      WritableRaster backgroundRaster,
@@ -79,6 +82,7 @@ public final class Menu {
      WrapperPoint pointSelectedWrapper
     ) {
         this.edit = edit;
+        this.setup = setup;
         this.editFrame = editFrame;
         this.handler = handler;
         this.backgroundRaster = backgroundRaster;
@@ -211,14 +215,16 @@ public final class Menu {
             if (pointSelectedWrapper.value == null) {
                 return;
             }
-            colorColor = showDialog(editFrame, "choose curve color", null);
+            colorColor = showDialog(editFrame, "choose point color", null);
             if (colorColor == null) {
                 return;
             }
-            pointSelectedWrapper.value.color[0] = colorColor.getRed();
-            pointSelectedWrapper.value.color[1] = colorColor.getGreen();
-            pointSelectedWrapper.value.color[2] = colorColor.getBlue();
-            pointSelectedWrapper.value.color[3] = colorColor.getAlpha();
+            colorInt[0] = colorColor.getRed();
+            colorInt[1] = colorColor.getGreen();
+            colorInt[2] = colorColor.getBlue();
+            colorInt[3] = colorColor.getAlpha();
+            System.arraycopy(colorInt, 0, pointSelectedWrapper.value.color, 0, colorInt.length);
+            setup.setPointColor(pointSelectedWrapper.index, colorInt);
         });
         menu.add(item);
         pointItemList.add(item);
