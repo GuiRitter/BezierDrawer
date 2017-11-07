@@ -22,7 +22,6 @@ import static javax.swing.JTable.AUTO_RESIZE_OFF;
 import javax.swing.SpinnerNumberModel;
 import static javax.swing.SwingConstants.CENTER;
 import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
@@ -87,7 +86,6 @@ public final class Setup {
 
         GridBagConstraints gridBagConstraints;
 
-        JLabel renderTimeLabel = new JLabel("render time (ms):");
         JLabel pointIndexLabel = new JLabel("point index:");
         JSpinner pointIndexSpinner = new JSpinner();
         JButton pointColorButton = new JButton("point color");
@@ -98,6 +96,7 @@ public final class Setup {
         JLabel outputMaximumLabel = new JLabel("output maximum:");
         JFormattedTextField outputMaximumField = new JFormattedTextField();
 
+        JLabel renderTimeLabel = new JLabel("render time (ms):");
         gridBagConstraints = new GridBagConstraints();
         gridBagConstraints.anchor = SOUTH;
         gridBagConstraints.gridx = 0;
@@ -108,12 +107,9 @@ public final class Setup {
         frame.getContentPane().add(renderTimeLabel, gridBagConstraints);
 
         renderTimeSpinner = new JSpinner(new SpinnerNumberModel(34, 1, Long.MAX_VALUE, 1));
-        renderTimeSpinner.addChangeListener(new ChangeListener() {
+        renderTimeSpinner.addChangeListener((ChangeEvent e) -> {
 
-            @Override
-            public void stateChanged(ChangeEvent e) {
-                BézierDrawer.setRenderTime(((SpinnerNumberModel) renderTimeSpinner.getModel()).getNumber().intValue());
-            }
+            BézierDrawer.setRenderTime(((SpinnerNumberModel) renderTimeSpinner.getModel()).getNumber().intValue());
         });
         gridBagConstraints = new GridBagConstraints();
         gridBagConstraints.anchor = NORTH;
@@ -124,6 +120,7 @@ public final class Setup {
         gridBagConstraints.weighty = 1;
         frame.getContentPane().add(renderTimeSpinner, gridBagConstraints);
 
+        JLabel curveStepLabel = new JLabel("curve step:");
         gridBagConstraints = new GridBagConstraints();
         gridBagConstraints.anchor = SOUTH;
         gridBagConstraints.gridx = 0;
@@ -131,8 +128,10 @@ public final class Setup {
         gridBagConstraints.fill = HORIZONTAL;
         gridBagConstraints.insets = new Insets(5, 10, 0, 5);
         gridBagConstraints.weighty = 1;
-        frame.getContentPane().add(pointIndexLabel, gridBagConstraints);
+        frame.getContentPane().add(curveStepLabel, gridBagConstraints);
 
+//        NumberFormatter TODO
+        JFormattedTextField curveStepField = new JFormattedTextField();
         gridBagConstraints = new GridBagConstraints();
         gridBagConstraints.anchor = NORTH;
         gridBagConstraints.gridx = 0;
@@ -140,7 +139,7 @@ public final class Setup {
         gridBagConstraints.fill = HORIZONTAL;
         gridBagConstraints.insets = new Insets(0, 10, 5, 5);
         gridBagConstraints.weighty = 1;
-        frame.getContentPane().add(pointIndexSpinner, gridBagConstraints);
+        frame.getContentPane().add(curveStepField, gridBagConstraints);
 
         gridBagConstraints = new GridBagConstraints();
         gridBagConstraints.anchor = SOUTH;
@@ -149,7 +148,7 @@ public final class Setup {
         gridBagConstraints.fill = HORIZONTAL;
         gridBagConstraints.insets = new Insets(5, 10, 0, 5);
         gridBagConstraints.weighty = 1;
-        frame.getContentPane().add(pointRadiusLabel, gridBagConstraints);
+        frame.getContentPane().add(pointIndexLabel, gridBagConstraints);
 
         gridBagConstraints = new GridBagConstraints();
         gridBagConstraints.anchor = NORTH;
@@ -158,11 +157,29 @@ public final class Setup {
         gridBagConstraints.fill = HORIZONTAL;
         gridBagConstraints.insets = new Insets(0, 10, 5, 5);
         gridBagConstraints.weighty = 1;
+        frame.getContentPane().add(pointIndexSpinner, gridBagConstraints);
+
+        gridBagConstraints = new GridBagConstraints();
+        gridBagConstraints.anchor = SOUTH;
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 6;
+        gridBagConstraints.fill = HORIZONTAL;
+        gridBagConstraints.insets = new Insets(5, 10, 0, 5);
+        gridBagConstraints.weighty = 1;
+        frame.getContentPane().add(pointRadiusLabel, gridBagConstraints);
+
+        gridBagConstraints = new GridBagConstraints();
+        gridBagConstraints.anchor = NORTH;
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 7;
+        gridBagConstraints.fill = HORIZONTAL;
+        gridBagConstraints.insets = new Insets(0, 10, 5, 5);
+        gridBagConstraints.weighty = 1;
         frame.getContentPane().add(pointRadiusSpinner, gridBagConstraints);
 
         gridBagConstraints = new GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 6;
+        gridBagConstraints.gridy = 8;
         gridBagConstraints.fill = HORIZONTAL;
         gridBagConstraints.insets = new Insets(5, 10, 5, 5);
         gridBagConstraints.weighty = 1;
@@ -171,7 +188,7 @@ public final class Setup {
         gridBagConstraints = new GridBagConstraints();
         gridBagConstraints.anchor = SOUTH;
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 7;
+        gridBagConstraints.gridy = 9;
         gridBagConstraints.fill = HORIZONTAL;
         gridBagConstraints.insets = new Insets(5, 10, 0, 5);
         gridBagConstraints.weighty = 1;
@@ -180,7 +197,7 @@ public final class Setup {
         gridBagConstraints = new GridBagConstraints();
         gridBagConstraints.anchor = NORTH;
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 8;
+        gridBagConstraints.gridy = 10;
         gridBagConstraints.fill = HORIZONTAL;
         gridBagConstraints.insets = new Insets(0, 10, 5, 5);
         gridBagConstraints.weighty = 1;
@@ -189,7 +206,7 @@ public final class Setup {
         gridBagConstraints = new GridBagConstraints();
         gridBagConstraints.anchor = SOUTH;
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 9;
+        gridBagConstraints.gridy = 11;
         gridBagConstraints.fill = HORIZONTAL;
         gridBagConstraints.insets = new Insets(5, 10, 0, 5);
         gridBagConstraints.weighty = 1;
@@ -198,7 +215,7 @@ public final class Setup {
         gridBagConstraints = new GridBagConstraints();
         gridBagConstraints.anchor = NORTH;
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 10;
+        gridBagConstraints.gridy = 12;
         gridBagConstraints.fill = HORIZONTAL;
         gridBagConstraints.insets = new Insets(0, 10, 10, 5);
         gridBagConstraints.weighty = 1;
@@ -269,7 +286,7 @@ public final class Setup {
         gridBagConstraints = new GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 0;
-        gridBagConstraints.gridheight = 11;
+        gridBagConstraints.gridheight = 13;
         gridBagConstraints.fill = BOTH;
         gridBagConstraints.weightx = 1;
         gridBagConstraints.weighty = 1;

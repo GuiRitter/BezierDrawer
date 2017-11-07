@@ -71,7 +71,7 @@ public final class BézierDrawer {
         semaphore.acquireUninterruptibly();
         list.clear();
         list.addAll(BézierControlPointList);
-        step.value = BézierDrawer.step.value;
+        step.value = BézierDrawer.step.value; // TODO
         System.arraycopy(BézierDrawer.curveColor, 0, point.color, 0, 4);
         semaphore.release();
     }
@@ -98,6 +98,12 @@ public final class BézierDrawer {
         curveColor[1] = g;
         curveColor[2] = b;
         curveColor[3] = a;
+        semaphore.release();
+    }
+
+    static void setCurveStep(double step) {
+        semaphore.acquireUninterruptibly();
+        BézierDrawer.step.value = step;
         semaphore.release();
     }
 
