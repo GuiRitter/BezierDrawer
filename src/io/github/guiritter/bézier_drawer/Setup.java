@@ -19,6 +19,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JSpinner;
 import javax.swing.JTable;
 import static javax.swing.JTable.AUTO_RESIZE_OFF;
+import static javax.swing.SwingConstants.CENTER;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
@@ -220,7 +221,8 @@ public final class Setup {
         table.setModel(tableModel);
         table.getColumnModel().getColumn(TABLE_COLUMN_COLOR).setMinWidth(0);
         table.getColumnModel().getColumn(TABLE_COLUMN_COLOR).setMaxWidth(0);
-        table.setDefaultRenderer(String.class, new DefaultTableCellRenderer(){
+        DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
+        DefaultTableCellRenderer colorCenterRenderer = new DefaultTableCellRenderer(){
 
             private int color[];
 
@@ -241,7 +243,12 @@ public final class Setup {
                  color[3]));
                 return component;
             }
-        });
+        };
+        centerRenderer.setHorizontalAlignment(CENTER);
+        colorCenterRenderer.setHorizontalAlignment(CENTER);
+        table.setDefaultRenderer(String.class, colorCenterRenderer);
+        table.setDefaultRenderer(Integer.class, centerRenderer);
+        table.setDefaultRenderer(Double.class, centerRenderer);
 
         JScrollPane tablePane = new JScrollPane();
         table.setAutoResizeMode(AUTO_RESIZE_OFF);

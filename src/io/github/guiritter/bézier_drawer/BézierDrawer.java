@@ -111,10 +111,14 @@ public final class BézierDrawer {
         UIManager.put("Button.font",             font);
         UIManager.put("CheckBox.font",           font);
         UIManager.put("ComboBox.font",           font);
+        UIManager.put("FormattedTextField.font", font);
         UIManager.put("InternalFrame.titleFont", font);
         UIManager.put("Label.font",              font);
         UIManager.put("List.font",               font);
         UIManager.put("MenuItem.font",           font);
+        UIManager.put("Spinner.font",            font);
+        UIManager.put("Table.font",              font);
+        UIManager.put("TableHeader.font",        font);
         UIManager.put("TextField.font",          font);
         UIManager.put("ToolTip.font",            font);
         JLabel label = new JLabel("—");
