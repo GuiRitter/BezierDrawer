@@ -9,7 +9,6 @@ import java.awt.event.MouseMotionAdapter;
 import java.awt.image.BufferedImage;
 import static java.awt.image.BufferedImage.TYPE_INT_ARGB;
 import java.awt.image.WritableRaster;
-import java.util.LinkedList;
 import java.util.Timer;
 import java.util.concurrent.Semaphore;
 import javax.swing.JButton;
@@ -40,7 +39,7 @@ public final class Edit {
 
     private int height;
 
-    private ImageComponentMultiple imageComponent;
+    private final ImageComponentMultiple imageComponent;
 
     private final Point lastPoint = new Point(0, 0, new int[4], 0);
 
@@ -48,7 +47,11 @@ public final class Edit {
 
     private final WrapperPoint pointSelectedWrapper = new WrapperPoint();
 
+    private Renderer renderer;
+
     private final Setup setup;
+
+    private final Timer timer;
 
     private int width;
 
@@ -77,8 +80,20 @@ public final class Edit {
         frame.repaint();
     }
 
+    public void setRenderTime(int period) {
+        if (renderer != null) {
+            renderer.cancel();
+        }
+        renderer = new Renderer(foregroundRaster, imageComponent);
+        timer.purge();
+        timer.scheduleAtFixedRate(renderer, 0, period);
+    }
+
     public Edit(Setup setup) {
         this.setup = setup;
+        imageComponent = new ImageComponentMultiple();
+        timer = new Timer(Renderer.class.getSimpleName());
+
         frame = new JFrame("Bézier Drawer · Edit");
         frame.setDefaultCloseOperation(EXIT_ON_CLOSE);
 
@@ -92,10 +107,9 @@ public final class Edit {
             backgroundColorRaster = backgroundColorImage.getRaster();
             foregroundImage = new BufferedImage(width, height, TYPE_INT_ARGB);
             foregroundRaster = foregroundImage.getRaster();
-            LinkedList<BufferedImage> list = new LinkedList<>();
-            list.add(backgroundColorImage);
-            list.add(foregroundImage);
-            imageComponent = new ImageComponentMultiple(list);
+            imageComponent.images.add(backgroundColorImage);
+            imageComponent.images.add(foregroundImage);
+            imageComponent.update();
             imageComponent.addMouseListener(new MouseAdapter() {
 
                 @Override
@@ -130,7 +144,7 @@ public final class Edit {
             frame.getContentPane().add(imageComponent);
             frame.revalidate();
             frame.repaint();
-            (new Timer(Renderer.class.getSimpleName())).scheduleAtFixedRate(new Renderer(foregroundRaster, imageComponent), 0, 34);
+            setRenderTime(34);
             (new Thread(handler = new Handler(width, height, setup, backgroundColorRaster, pointSelectedSemaphore, pointSelectedWrapper))).start();
             imageComponent.setComponentPopupMenu((new Menu(width, height, this, setup, frame, handler, backgroundColorRaster, lastPoint, pointSelectedSemaphore, pointSelectedWrapper)).menu);
         });

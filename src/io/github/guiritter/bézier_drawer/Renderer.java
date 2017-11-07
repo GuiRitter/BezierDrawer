@@ -7,13 +7,13 @@ import static java.lang.Math.min;
 import java.util.LinkedList;
 import java.util.TimerTask;
 
-public final class Renderer extends  TimerTask{
+public final class Renderer extends TimerTask {
 
     private final LinkedList<Point> BézierControlPointList = new LinkedList();
 
     private final BézierCurve curve;
 
-    private final int height;
+    private int height;
 
     private final ImageComponent imageComponent;
 
@@ -21,13 +21,13 @@ public final class Renderer extends  TimerTask{
 
     private final WritableRaster raster;
 
-    private final WrapperDouble step = new WrapperDouble(0.1);
+    private final Wrapper<Double> step = new Wrapper<>(0.1);
 
     private double t;
 
     private final int transparency[] = new int[]{0, 0, 0, 0};
 
-    private final int width;
+    private int width;
 
     private int x;
 
@@ -56,6 +56,8 @@ public final class Renderer extends  TimerTask{
     @Override
     public void run() {
         BézierDrawer.getRenderData(BézierControlPointList, step, point);
+        width = raster.getWidth();
+        height = raster.getHeight();
         for (y = 0; y < height; y++) {
             for (x = 0; x < width; x++) {
                 raster.setPixel(x, y, transparency);
@@ -77,8 +79,6 @@ public final class Renderer extends  TimerTask{
     public Renderer(WritableRaster raster, ImageComponent imageComponent) {
         this.raster = raster;
         this.imageComponent = imageComponent;
-        width = raster.getWidth();
-        height = raster.getHeight();
         curve = new BézierCurve(BézierControlPointList, point);
     }
 }

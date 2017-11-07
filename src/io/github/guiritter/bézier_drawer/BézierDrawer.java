@@ -19,13 +19,15 @@ public final class BézierDrawer {
 
     private static final int curveColor[] = new int[]{0, 0, 0, 255};
 
+    private static final Edit edit;
+
     public static final Font font = new Font("DejaVu Sans", 0, 12); // NOI18N
 
     private static final Semaphore semaphore = new Semaphore(1, true);
 
     private static final Setup setup;
 
-    private static final WrapperDouble step = new WrapperDouble(0.001);
+    private static final Wrapper step = new Wrapper(0.001);
 
     public static final int SPACE_INT;
 
@@ -65,7 +67,7 @@ public final class BézierDrawer {
         semaphore.release();
     }
 
-    static void getRenderData(LinkedList<Point> list, WrapperDouble step, Point point) {
+    static void getRenderData(LinkedList<Point> list, Wrapper step, Point point) {
         semaphore.acquireUninterruptibly();
         list.clear();
         list.addAll(BézierControlPointList);
@@ -99,6 +101,10 @@ public final class BézierDrawer {
         semaphore.release();
     }
 
+    static void setRenderTime(int period) {
+        edit.setRenderTime(period);
+    }
+
     static void setStep(double step) {
         semaphore.acquireUninterruptibly();
         BézierDrawer.step.value = step;
@@ -130,9 +136,8 @@ public final class BézierDrawer {
         SPACE_HALF_DIMENSION = new Dimension(SPACE_HALF_INT, SPACE_HALF_INT);
 
         setup = new Setup();
+        edit = new Edit(setup);
     }
 
-    public static void main(String args[]) {
-        new Edit(setup);
-    }
+    public static void main(String args[]) {}
 }

@@ -19,13 +19,18 @@ import javax.swing.JScrollPane;
 import javax.swing.JSpinner;
 import javax.swing.JTable;
 import static javax.swing.JTable.AUTO_RESIZE_OFF;
+import javax.swing.SpinnerNumberModel;
 import static javax.swing.SwingConstants.CENTER;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
 public final class Setup {
 
     final JFrame frame;
+
+    private final JSpinner renderTimeSpinner;
 
     private static final int TABLE_COLUMN_INDEX = 0;
     private static final int TABLE_COLUMN_DISPLAY_X = 1;
@@ -84,7 +89,6 @@ public final class Setup {
 
         JLabel renderTimeLabel = new JLabel("render time (ms):");
         JLabel pointIndexLabel = new JLabel("point index:");
-        JSpinner renderTimeSpinner = new JSpinner();
         JSpinner pointIndexSpinner = new JSpinner();
         JButton pointColorButton = new JButton("point color");
         JLabel pointRadiusLabel = new JLabel("point radius:");
@@ -103,6 +107,14 @@ public final class Setup {
         gridBagConstraints.weighty = 1;
         frame.getContentPane().add(renderTimeLabel, gridBagConstraints);
 
+        renderTimeSpinner = new JSpinner(new SpinnerNumberModel(34, 1, Long.MAX_VALUE, 1));
+        renderTimeSpinner.addChangeListener(new ChangeListener() {
+
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                BézierDrawer.setRenderTime(((SpinnerNumberModel) renderTimeSpinner.getModel()).getNumber().intValue());
+            }
+        });
         gridBagConstraints = new GridBagConstraints();
         gridBagConstraints.anchor = NORTH;
         gridBagConstraints.gridx = 0;
