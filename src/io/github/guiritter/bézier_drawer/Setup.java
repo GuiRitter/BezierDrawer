@@ -27,9 +27,13 @@ import javax.swing.table.DefaultTableModel;
 
 public final class Setup {
 
+    private static final String fpsString = "frame period (ms) = %f FPS:";
+
     final JFrame frame;
 
-    private final JSpinner renderTimeSpinner;
+    private final JLabel framePeriodLabel;
+
+    private final JSpinner framePeriodSpinner;
 
     private static final int TABLE_COLUMN_INDEX = 0;
     private static final int TABLE_COLUMN_DISPLAY_X = 1;
@@ -49,6 +53,10 @@ public final class Setup {
         updateIndex(i);
     }
 
+    public long getFramePeriod() {
+        return ((SpinnerNumberModel) framePeriodSpinner.getModel()).getNumber().longValue();
+    }
+
     public int[] getNewPointColor() {
         return new int[]{0, 0, 0, 255}; // TODO
     }
@@ -60,6 +68,10 @@ public final class Setup {
     public void removePoint(int i) {
         tableModel.removeRow(i);
         updateIndex(i);
+    }
+
+    private void setFPSString() {
+        framePeriodLabel.setText(String.format(fpsString, 1000d / ((double) getFramePeriod())));
     }
 
     public void setPoint(int i, int x, int y) {
@@ -96,7 +108,7 @@ public final class Setup {
         JLabel outputMaximumLabel = new JLabel("output maximum:");
         JFormattedTextField outputMaximumField = new JFormattedTextField();
 
-        JLabel renderTimeLabel = new JLabel("render time (ms):");
+        framePeriodLabel = new JLabel("frame period (ms):");
         gridBagConstraints = new GridBagConstraints();
         gridBagConstraints.anchor = SOUTH;
         gridBagConstraints.gridx = 0;
@@ -104,12 +116,13 @@ public final class Setup {
         gridBagConstraints.fill = HORIZONTAL;
         gridBagConstraints.insets = new Insets(10, 10, 0, 5);
         gridBagConstraints.weighty = 1;
-        frame.getContentPane().add(renderTimeLabel, gridBagConstraints);
+        frame.getContentPane().add(framePeriodLabel, gridBagConstraints);
 
-        renderTimeSpinner = new JSpinner(new SpinnerNumberModel(34, 1, Long.MAX_VALUE, 1));
-        renderTimeSpinner.addChangeListener((ChangeEvent e) -> {
+        framePeriodSpinner = new JSpinner(new SpinnerNumberModel(34, 1, Long.MAX_VALUE, 1));
+        framePeriodSpinner.addChangeListener((ChangeEvent e) -> {
 
-            BézierDrawer.setRenderTime(((SpinnerNumberModel) renderTimeSpinner.getModel()).getNumber().intValue());
+            BézierDrawer.setFramePeriod(getFramePeriod());
+            setFPSString();
         });
         gridBagConstraints = new GridBagConstraints();
         gridBagConstraints.anchor = NORTH;
@@ -118,9 +131,10 @@ public final class Setup {
         gridBagConstraints.fill = HORIZONTAL;
         gridBagConstraints.insets = new Insets(0, 10, 5, 5);
         gridBagConstraints.weighty = 1;
-        frame.getContentPane().add(renderTimeSpinner, gridBagConstraints);
+        frame.getContentPane().add(framePeriodSpinner, gridBagConstraints);
+        setFPSString();
 
-        JLabel curveStepLabel = new JLabel("curve step:");
+        JLabel curvePointAmountLabel = new JLabel("curve point amount:");
         gridBagConstraints = new GridBagConstraints();
         gridBagConstraints.anchor = SOUTH;
         gridBagConstraints.gridx = 0;
@@ -128,10 +142,9 @@ public final class Setup {
         gridBagConstraints.fill = HORIZONTAL;
         gridBagConstraints.insets = new Insets(5, 10, 0, 5);
         gridBagConstraints.weighty = 1;
-        frame.getContentPane().add(curveStepLabel, gridBagConstraints);
+        frame.getContentPane().add(curvePointAmountLabel, gridBagConstraints);
 
-//        NumberFormatter TODO
-        JFormattedTextField curveStepField = new JFormattedTextField();
+        JSpinner curvePointAmountSpinner = new JSpinner(new SpinnerNumberModel(1000, 0, Long.MAX_VALUE, 1));
         gridBagConstraints = new GridBagConstraints();
         gridBagConstraints.anchor = NORTH;
         gridBagConstraints.gridx = 0;
@@ -139,7 +152,7 @@ public final class Setup {
         gridBagConstraints.fill = HORIZONTAL;
         gridBagConstraints.insets = new Insets(0, 10, 5, 5);
         gridBagConstraints.weighty = 1;
-        frame.getContentPane().add(curveStepField, gridBagConstraints);
+        frame.getContentPane().add(curvePointAmountSpinner, gridBagConstraints);
 
         gridBagConstraints = new GridBagConstraints();
         gridBagConstraints.anchor = SOUTH;

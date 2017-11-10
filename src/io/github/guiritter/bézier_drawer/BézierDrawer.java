@@ -37,6 +37,10 @@ public final class BézierDrawer {
 
     public static final Dimension SPACE_HALF_DIMENSION;
 
+    static long getFramePeriod() {
+        return setup.getFramePeriod();
+    }
+
     static void addPoint(int x, int y) {
         semaphore.acquireUninterruptibly();
         color = setup.getNewPointColor();
@@ -107,8 +111,8 @@ public final class BézierDrawer {
         semaphore.release();
     }
 
-    static void setRenderTime(int period) {
-        edit.setRenderTime(period);
+    static void setFramePeriod(long period) {
+        edit.setFramePeriod(period);
     }
 
     static void setStep(double step) {

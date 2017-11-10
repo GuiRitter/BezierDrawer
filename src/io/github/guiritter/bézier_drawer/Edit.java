@@ -80,7 +80,7 @@ public final class Edit {
         frame.repaint();
     }
 
-    public void setRenderTime(int period) {
+    public void setFramePeriod(long period) {
         if (renderer != null) {
             renderer.cancel();
         }
@@ -144,7 +144,7 @@ public final class Edit {
             frame.getContentPane().add(imageComponent);
             frame.revalidate();
             frame.repaint();
-            setRenderTime(34);
+            setFramePeriod(BézierDrawer.getFramePeriod());
             (new Thread(handler = new Handler(width, height, setup, backgroundColorRaster, pointSelectedSemaphore, pointSelectedWrapper))).start();
             imageComponent.setComponentPopupMenu((new Menu(width, height, this, setup, frame, handler, backgroundColorRaster, lastPoint, pointSelectedSemaphore, pointSelectedWrapper)).menu);
         });
