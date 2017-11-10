@@ -44,7 +44,7 @@ public final class BézierDrawer {
     static void addPoint(int x, int y) {
         semaphore.acquireUninterruptibly();
         color = setup.getNewPointColor();
-        BézierControlPointList.add(new Point(x, y, color, setup.getNewPointRadius()));
+        BézierControlPointList.add(new Point(x, y, color, setup.getPointRadius()));
         setup.addPoint(x, y, color);
         semaphore.release();
     }
@@ -52,7 +52,7 @@ public final class BézierDrawer {
     static void addPoint(int x, int y, int i) {
         semaphore.acquireUninterruptibly();
         color = setup.getNewPointColor();
-        BézierControlPointList.add(i, new Point(x, y, color, setup.getNewPointRadius()));
+        BézierControlPointList.add(i, new Point(x, y, color, setup.getPointRadius()));
         setup.addPoint(x, y, color, i);
         semaphore.release();
     }

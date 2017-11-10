@@ -37,6 +37,8 @@ public final class Setup {
 
     private final JSpinner framePeriodSpinner;
 
+    private final JSpinner pointRadiusSpinner;
+
     private static final int TABLE_COLUMN_INDEX = 0;
     private static final int TABLE_COLUMN_DISPLAY_X = 1;
     private static final int TABLE_COLUMN_DISPLAY_Y = 2;
@@ -67,8 +69,8 @@ public final class Setup {
         return new int[]{0, 0, 0, 255}; // TODO
     }
 
-    public int getNewPointRadius() {
-        return 5; // TODO
+    public int getPointRadius() {
+        return ((SpinnerNumberModel) pointRadiusSpinner.getModel()).getNumber().intValue();
     }
 
     public void removePoint(int i) {
@@ -103,16 +105,6 @@ public final class Setup {
         frame.getContentPane().setLayout(new GridBagLayout());
 
         GridBagConstraints gridBagConstraints;
-
-        JLabel pointIndexLabel = new JLabel("point index:");
-        JSpinner pointIndexSpinner = new JSpinner();
-        JButton pointColorButton = new JButton("point color");
-        JLabel pointRadiusLabel = new JLabel("point radius:");
-        JSpinner pointRadiusSpinner = new JSpinner();
-        JLabel outputMinimumLabel = new JLabel("output minimum:");
-        JFormattedTextField outputMinimumField = new JFormattedTextField();
-        JLabel outputMaximumLabel = new JLabel("output maximum:");
-        JFormattedTextField outputMaximumField = new JFormattedTextField();
 
         framePeriodLabel = new JLabel("frame period (ms):");
         gridBagConstraints = new GridBagConstraints();
@@ -165,6 +157,8 @@ public final class Setup {
         frame.getContentPane().add(curvePointAmountSpinner, gridBagConstraints);
         BézierDrawer.setCurveStep(getCurveStep());
 
+        JLabel pointIndexLabel = new JLabel("point index:");
+        pointIndexLabel.setEnabled(false);
         gridBagConstraints = new GridBagConstraints();
         gridBagConstraints.anchor = SOUTH;
         gridBagConstraints.gridx = 0;
@@ -174,6 +168,8 @@ public final class Setup {
         gridBagConstraints.weighty = 1;
         frame.getContentPane().add(pointIndexLabel, gridBagConstraints);
 
+        JSpinner pointIndexSpinner = new JSpinner();
+        pointIndexSpinner.setEnabled(false);
         gridBagConstraints = new GridBagConstraints();
         gridBagConstraints.anchor = NORTH;
         gridBagConstraints.gridx = 0;
@@ -183,6 +179,7 @@ public final class Setup {
         gridBagConstraints.weighty = 1;
         frame.getContentPane().add(pointIndexSpinner, gridBagConstraints);
 
+        JLabel pointRadiusLabel = new JLabel("point radius:");
         gridBagConstraints = new GridBagConstraints();
         gridBagConstraints.anchor = SOUTH;
         gridBagConstraints.gridx = 0;
@@ -192,6 +189,7 @@ public final class Setup {
         gridBagConstraints.weighty = 1;
         frame.getContentPane().add(pointRadiusLabel, gridBagConstraints);
 
+        pointRadiusSpinner = new JSpinner(new SpinnerNumberModel(5, 1, Short.MAX_VALUE, 1));
         gridBagConstraints = new GridBagConstraints();
         gridBagConstraints.anchor = NORTH;
         gridBagConstraints.gridx = 0;
@@ -201,6 +199,7 @@ public final class Setup {
         gridBagConstraints.weighty = 1;
         frame.getContentPane().add(pointRadiusSpinner, gridBagConstraints);
 
+        JButton pointColorButton = new JButton("point color");
         gridBagConstraints = new GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 8;
@@ -209,6 +208,7 @@ public final class Setup {
         gridBagConstraints.weighty = 1;
         frame.getContentPane().add(pointColorButton, gridBagConstraints);
 
+        JLabel outputMinimumLabel = new JLabel("output minimum:");
         gridBagConstraints = new GridBagConstraints();
         gridBagConstraints.anchor = SOUTH;
         gridBagConstraints.gridx = 0;
@@ -218,6 +218,7 @@ public final class Setup {
         gridBagConstraints.weighty = 1;
         frame.getContentPane().add(outputMinimumLabel, gridBagConstraints);
 
+        JFormattedTextField outputMinimumField = new JFormattedTextField();
         gridBagConstraints = new GridBagConstraints();
         gridBagConstraints.anchor = NORTH;
         gridBagConstraints.gridx = 0;
@@ -227,6 +228,7 @@ public final class Setup {
         gridBagConstraints.weighty = 1;
         frame.getContentPane().add(outputMinimumField, gridBagConstraints);
 
+        JLabel outputMaximumLabel = new JLabel("output maximum:");
         gridBagConstraints = new GridBagConstraints();
         gridBagConstraints.anchor = SOUTH;
         gridBagConstraints.gridx = 0;
@@ -236,6 +238,7 @@ public final class Setup {
         gridBagConstraints.weighty = 1;
         frame.getContentPane().add(outputMaximumLabel, gridBagConstraints);
 
+        JFormattedTextField outputMaximumField = new JFormattedTextField();
         gridBagConstraints = new GridBagConstraints();
         gridBagConstraints.anchor = NORTH;
         gridBagConstraints.gridx = 0;
