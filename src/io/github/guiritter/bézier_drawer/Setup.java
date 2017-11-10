@@ -1,7 +1,10 @@
 package io.github.guiritter.bézier_drawer;
 
+import static io.github.guiritter.bézier_drawer.BézierDrawer.fontBold;
 import java.awt.Color;
+import static java.awt.Color.BLACK;
 import java.awt.Component;
+import java.awt.Font;
 import java.awt.GridBagConstraints;
 import static java.awt.GridBagConstraints.BOTH;
 import static java.awt.GridBagConstraints.HORIZONTAL;
@@ -9,8 +12,10 @@ import static java.awt.GridBagConstraints.NORTH;
 import static java.awt.GridBagConstraints.SOUTH;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.event.ActionEvent;
 import java.util.Arrays;
 import javax.swing.JButton;
+import static javax.swing.JColorChooser.showDialog;
 import javax.swing.JFormattedTextField;
 import javax.swing.JFrame;
 import static javax.swing.JFrame.EXIT_ON_CLOSE;
@@ -27,6 +32,10 @@ import javax.swing.table.DefaultTableModel;
 
 public final class Setup {
 
+    private final int colorInt[] = new int[4];
+
+    private Color colorColor;
+
     private final JSpinner curvePointAmountSpinner;
 
     private static final String fpsString = "frame period (ms) = %f FPS:";
@@ -36,6 +45,8 @@ public final class Setup {
     private final JLabel framePeriodLabel;
 
     private final JSpinner framePeriodSpinner;
+
+    private final JButton pointColorButton;
 
     private final JSpinner pointRadiusSpinner;
 
@@ -57,6 +68,24 @@ public final class Setup {
         updateIndex(i);
     }
 
+    private static Color getContrast(Color color) {
+        return new Color(
+         (color.getRed()   < 128) ? 255 : 0,
+         (color.getGreen() < 128) ? 255 : 0,
+         (color.getBlue()  < 128) ? 255 : 0,
+         color.getAlpha()
+        );
+    }
+
+    private static Color getContrast(int color[]) {
+        return new Color(
+         (color[0] < 128) ? 255 : 0,
+         (color[1] < 128) ? 255 : 0,
+         (color[2] < 128) ? 255 : 0,
+         color[3]
+        );
+    }
+
     public double getCurveStep() {
         return 1d / ((SpinnerNumberModel) curvePointAmountSpinner.getModel()).getNumber().doubleValue();
     }
@@ -66,7 +95,8 @@ public final class Setup {
     }
 
     public int[] getNewPointColor() {
-        return new int[]{0, 0, 0, 255}; // TODO
+        colorColor = pointColorButton.getBackground();
+        return new int[]{colorColor.getRed(), colorColor.getGreen(), colorColor.getBlue(), colorColor.getAlpha()};
     }
 
     public int getPointRadius() {
@@ -199,7 +229,19 @@ public final class Setup {
         gridBagConstraints.weighty = 1;
         frame.getContentPane().add(pointRadiusSpinner, gridBagConstraints);
 
-        JButton pointColorButton = new JButton("point color");
+        pointColorButton = new JButton("point color");
+        pointColorButton.setFont(fontBold);
+        pointColorButton.setBackground(BLACK);
+        pointColorButton.setForeground(getContrast(pointColorButton.getBackground()));
+        pointColorButton.addActionListener((ActionEvent e) -> {
+
+            colorColor = showDialog(frame, "choose point color", pointColorButton.getBackground());
+            if (colorColor == null) {
+                return;
+            }
+            pointColorButton.setBackground(colorColor);
+            pointColorButton.setForeground(getContrast(colorColor));
+        });
         gridBagConstraints = new GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 8;
@@ -285,6 +327,11 @@ public final class Setup {
             private Component component;
 
             @Override
+            public Font getFont() {
+                return fontBold;
+            }
+
+            @Override
             public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
                 component = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column); //To change body of generated methods, choose Tools | Templates.
                 if (column != TABLE_COLUMN_INDEX) {
@@ -292,11 +339,7 @@ public final class Setup {
                 }
                 color = (int[]) tableModel.getValueAt(row, TABLE_COLUMN_COLOR);
                 component.setBackground(new Color(color[0], color[1], color[2], color[3]));
-                component.setForeground(new Color(
-                 (color[0] < 128) ? 255 : 0,
-                 (color[1] < 128) ? 255 : 0,
-                 (color[2] < 128) ? 255 : 0,
-                 color[3]));
+                component.setForeground(getContrast(color));
                 return component;
             }
         };

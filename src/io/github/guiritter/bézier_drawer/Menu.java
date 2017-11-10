@@ -215,7 +215,8 @@ public final class Menu {
             if (pointSelectedWrapper.value == null) {
                 return;
             }
-            colorColor = showDialog(editFrame, "choose point color", null);
+            System.arraycopy(pointSelectedWrapper.value.color, 0, colorInt, 0, colorInt.length);
+            colorColor = showDialog(editFrame, "choose point color", new Color(colorInt[0], colorInt[1], colorInt[2], colorInt[3]));
             if (colorColor == null) {
                 return;
             }

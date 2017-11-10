@@ -2,6 +2,7 @@ package io.github.guiritter.bézier_drawer;
 
 import java.awt.Dimension;
 import java.awt.Font;
+import static java.awt.Font.BOLD;
 import java.util.LinkedList;
 import java.util.concurrent.Semaphore;
 import javax.swing.JDialog;
@@ -22,6 +23,8 @@ public final class BézierDrawer {
     private static final Edit edit;
 
     public static final Font font = new Font("DejaVu Sans", 0, 12); // NOI18N
+
+    public static final Font fontBold = font.deriveFont(font.getStyle() | BOLD);
 
     private static final Semaphore semaphore = new Semaphore(1, true);
 
