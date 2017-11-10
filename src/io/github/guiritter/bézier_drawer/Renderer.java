@@ -21,7 +21,7 @@ public final class Renderer extends TimerTask {
 
     private final WritableRaster raster;
 
-    private final Wrapper<Double> step = new Wrapper<>(0.1);
+    private final Wrapper<Double> step = new Wrapper<>();
 
     private double t;
 

@@ -27,7 +27,7 @@ public final class BézierDrawer {
 
     private static final Setup setup;
 
-    private static final Wrapper step = new Wrapper(0.001);
+    private static final Wrapper step = new Wrapper();
 
     public static final int SPACE_INT;
 

@@ -27,6 +27,8 @@ import javax.swing.table.DefaultTableModel;
 
 public final class Setup {
 
+    private final JSpinner curvePointAmountSpinner;
+
     private static final String fpsString = "frame period (ms) = %f FPS:";
 
     final JFrame frame;
@@ -51,6 +53,10 @@ public final class Setup {
     public void addPoint(int x, int y, int color[], int i) {
         tableModel.insertRow(i, new Object[]{tableModel.getRowCount(), x, y, 0, 0, Arrays.copyOf(color, color.length)}); // TODO fit
         updateIndex(i);
+    }
+
+    public double getCurveStep() {
+        return 1d / ((SpinnerNumberModel) curvePointAmountSpinner.getModel()).getNumber().doubleValue();
     }
 
     public long getFramePeriod() {
@@ -144,7 +150,11 @@ public final class Setup {
         gridBagConstraints.weighty = 1;
         frame.getContentPane().add(curvePointAmountLabel, gridBagConstraints);
 
-        JSpinner curvePointAmountSpinner = new JSpinner(new SpinnerNumberModel(1000, 0, Long.MAX_VALUE, 1));
+        curvePointAmountSpinner = new JSpinner(new SpinnerNumberModel(1000, 0, Long.MAX_VALUE, 1));
+        curvePointAmountSpinner.addChangeListener((ChangeEvent e) -> {
+
+            BézierDrawer.setCurveStep(getCurveStep());
+        });
         gridBagConstraints = new GridBagConstraints();
         gridBagConstraints.anchor = NORTH;
         gridBagConstraints.gridx = 0;
@@ -153,6 +163,7 @@ public final class Setup {
         gridBagConstraints.insets = new Insets(0, 10, 5, 5);
         gridBagConstraints.weighty = 1;
         frame.getContentPane().add(curvePointAmountSpinner, gridBagConstraints);
+        BézierDrawer.setCurveStep(getCurveStep());
 
         gridBagConstraints = new GridBagConstraints();
         gridBagConstraints.anchor = SOUTH;
