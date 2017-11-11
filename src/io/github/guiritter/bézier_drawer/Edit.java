@@ -102,6 +102,7 @@ public final class Edit {
 
             width = button.getWidth();
             height = button.getHeight();
+            setup.setSize(width, height);
             backgroundColorImage = new BufferedImage(width, height, TYPE_INT_ARGB);
             backgroundColorRaster = backgroundColorImage.getRaster();
             foregroundImage = new BufferedImage(width, height, TYPE_INT_ARGB);

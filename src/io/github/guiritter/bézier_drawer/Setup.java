@@ -1,5 +1,7 @@
 package io.github.guiritter.bézier_drawer;
 
+import static io.github.guiritter.bézier_drawer.BézierDrawer.SPACE_HALF_INT;
+import static io.github.guiritter.bézier_drawer.BézierDrawer.SPACE_INT;
 import static io.github.guiritter.bézier_drawer.BézierDrawer.fontBold;
 import java.awt.Color;
 import static java.awt.Color.BLACK;
@@ -13,6 +15,7 @@ import static java.awt.GridBagConstraints.SOUTH;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
+import java.text.NumberFormat;
 import java.util.Arrays;
 import javax.swing.JButton;
 import static javax.swing.JColorChooser.showDialog;
@@ -38,6 +41,10 @@ public final class Setup {
 
     private final JSpinner curvePointAmountSpinner;
 
+    private final Wrapper<FitLinear> fitX = new Wrapper<>();
+
+    private final Wrapper<FitLinear> fitY = new Wrapper<>();
+
     private static final String fpsString = "frame period (ms) = %f FPS:";
 
     final JFrame frame;
@@ -45,6 +52,20 @@ public final class Setup {
     private final JLabel framePeriodLabel;
 
     private final JSpinner framePeriodSpinner;
+
+    private final Wrapper<Integer> height = new Wrapper<>();
+
+    private final Wrapper<Double> outputMaximumX = new Wrapper<>();
+
+    private final Wrapper<Double> outputMaximumY = new Wrapper<>();
+
+    private final Wrapper<Double> outputMinimumX = new Wrapper<>();
+
+    private final Wrapper<Double> outputMinimumY = new Wrapper<>();
+
+    private double outputX;
+
+    private double outputY;
 
     private final JButton pointColorButton;
 
@@ -59,12 +80,28 @@ public final class Setup {
 
     private final DefaultTableModel tableModel;
 
+    private final Wrapper<Integer> width = new Wrapper<>();
+
     public void addPoint(int x, int y, int color[]) {
-        tableModel.addRow(new Object[]{tableModel.getRowCount(), x, y, 0, 0, Arrays.copyOf(color, color.length)}); // TODO fit
+        if (fitX.value == null) {
+            outputX = 0;
+            outputY = 0;
+        } else {
+            outputX = fitX.value.f(x);
+            outputY = fitY.value.f(y);
+        }
+        tableModel.addRow(new Object[]{tableModel.getRowCount(), x, y, outputX, outputY, Arrays.copyOf(color, color.length)});
     }
 
     public void addPoint(int x, int y, int color[], int i) {
-        tableModel.insertRow(i, new Object[]{tableModel.getRowCount(), x, y, 0, 0, Arrays.copyOf(color, color.length)}); // TODO fit
+        if (fitX.value == null) {
+            outputX = 0;
+            outputY = 0;
+        } else {
+            outputX = fitX.value.f(x);
+            outputY = fitY.value.f(y);
+        }
+        tableModel.insertRow(i, new Object[]{tableModel.getRowCount(), x, y, outputX, outputY, Arrays.copyOf(color, color.length)}); // TODO fit
         updateIndex(i);
     }
 
@@ -113,14 +150,28 @@ public final class Setup {
     }
 
     public void setPoint(int i, int x, int y) {
-        tableModel.setValueAt(x, i, TABLE_COLUMN_DISPLAY_X);
-        tableModel.setValueAt(y, i, TABLE_COLUMN_DISPLAY_Y);
+        if (fitX.value == null) {
+            outputX = 0;
+            outputY = 0;
+        } else {
+            outputX = fitX.value.f(x);
+            outputY = fitY.value.f(y);
+        }
+        tableModel.setValueAt(      x, i, TABLE_COLUMN_DISPLAY_X);
+        tableModel.setValueAt(      y, i, TABLE_COLUMN_DISPLAY_Y);
+        tableModel.setValueAt(outputX, i, TABLE_COLUMN_OUTPUT_X);
+        tableModel.setValueAt(outputY, i, TABLE_COLUMN_OUTPUT_Y);
     }
 
     public void setPointColor(int i, int color[]) {
         tableModel.setValueAt(Arrays.copyOf(color, color.length), i, TABLE_COLUMN_COLOR);
         frame.revalidate();
         frame.repaint();
+    }
+
+    public void setSize(int width, int height) {
+        this.width.value = width - 1;
+        this.height.value = height - 1;
     }
 
     public void updateIndex(int i) {
@@ -141,8 +192,9 @@ public final class Setup {
         gridBagConstraints.anchor = SOUTH;
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
+        gridBagConstraints.gridwidth = 2;
         gridBagConstraints.fill = HORIZONTAL;
-        gridBagConstraints.insets = new Insets(10, 10, 0, 5);
+        gridBagConstraints.insets = new Insets(SPACE_INT, SPACE_INT, 0, SPACE_HALF_INT);
         gridBagConstraints.weighty = 1;
         frame.getContentPane().add(framePeriodLabel, gridBagConstraints);
 
@@ -156,8 +208,9 @@ public final class Setup {
         gridBagConstraints.anchor = NORTH;
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
+        gridBagConstraints.gridwidth = 2;
         gridBagConstraints.fill = HORIZONTAL;
-        gridBagConstraints.insets = new Insets(0, 10, 5, 5);
+        gridBagConstraints.insets = new Insets(0, SPACE_INT, SPACE_HALF_INT, SPACE_HALF_INT);
         gridBagConstraints.weighty = 1;
         frame.getContentPane().add(framePeriodSpinner, gridBagConstraints);
         setFPSString();
@@ -167,8 +220,9 @@ public final class Setup {
         gridBagConstraints.anchor = SOUTH;
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 2;
+        gridBagConstraints.gridwidth = 2;
         gridBagConstraints.fill = HORIZONTAL;
-        gridBagConstraints.insets = new Insets(5, 10, 0, 5);
+        gridBagConstraints.insets = new Insets(SPACE_HALF_INT, SPACE_INT, 0, SPACE_HALF_INT);
         gridBagConstraints.weighty = 1;
         frame.getContentPane().add(curvePointAmountLabel, gridBagConstraints);
 
@@ -181,8 +235,9 @@ public final class Setup {
         gridBagConstraints.anchor = NORTH;
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 3;
+        gridBagConstraints.gridwidth = 2;
         gridBagConstraints.fill = HORIZONTAL;
-        gridBagConstraints.insets = new Insets(0, 10, 5, 5);
+        gridBagConstraints.insets = new Insets(0, SPACE_INT, SPACE_HALF_INT, SPACE_HALF_INT);
         gridBagConstraints.weighty = 1;
         frame.getContentPane().add(curvePointAmountSpinner, gridBagConstraints);
         BézierDrawer.setCurveStep(getCurveStep());
@@ -193,8 +248,9 @@ public final class Setup {
         gridBagConstraints.anchor = SOUTH;
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 4;
+        gridBagConstraints.gridwidth = 2;
         gridBagConstraints.fill = HORIZONTAL;
-        gridBagConstraints.insets = new Insets(5, 10, 0, 5);
+        gridBagConstraints.insets = new Insets(SPACE_HALF_INT, SPACE_INT, 0, SPACE_HALF_INT);
         gridBagConstraints.weighty = 1;
         frame.getContentPane().add(pointIndexLabel, gridBagConstraints);
 
@@ -204,8 +260,9 @@ public final class Setup {
         gridBagConstraints.anchor = NORTH;
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 5;
+        gridBagConstraints.gridwidth = 2;
         gridBagConstraints.fill = HORIZONTAL;
-        gridBagConstraints.insets = new Insets(0, 10, 5, 5);
+        gridBagConstraints.insets = new Insets(0, SPACE_INT, SPACE_HALF_INT, SPACE_HALF_INT);
         gridBagConstraints.weighty = 1;
         frame.getContentPane().add(pointIndexSpinner, gridBagConstraints);
 
@@ -214,8 +271,9 @@ public final class Setup {
         gridBagConstraints.anchor = SOUTH;
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 6;
+        gridBagConstraints.gridwidth = 2;
         gridBagConstraints.fill = HORIZONTAL;
-        gridBagConstraints.insets = new Insets(5, 10, 0, 5);
+        gridBagConstraints.insets = new Insets(SPACE_HALF_INT, SPACE_INT, 0, SPACE_HALF_INT);
         gridBagConstraints.weighty = 1;
         frame.getContentPane().add(pointRadiusLabel, gridBagConstraints);
 
@@ -224,8 +282,9 @@ public final class Setup {
         gridBagConstraints.anchor = NORTH;
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 7;
+        gridBagConstraints.gridwidth = 2;
         gridBagConstraints.fill = HORIZONTAL;
-        gridBagConstraints.insets = new Insets(0, 10, 5, 5);
+        gridBagConstraints.insets = new Insets(0, SPACE_INT, SPACE_HALF_INT, SPACE_HALF_INT);
         gridBagConstraints.weighty = 1;
         frame.getContentPane().add(pointRadiusSpinner, gridBagConstraints);
 
@@ -245,50 +304,106 @@ public final class Setup {
         gridBagConstraints = new GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 8;
+        gridBagConstraints.gridwidth = 2;
         gridBagConstraints.fill = HORIZONTAL;
-        gridBagConstraints.insets = new Insets(5, 10, 5, 5);
+        gridBagConstraints.insets = new Insets(SPACE_HALF_INT, SPACE_INT, SPACE_HALF_INT, SPACE_HALF_INT);
         gridBagConstraints.weighty = 1;
         frame.getContentPane().add(pointColorButton, gridBagConstraints);
 
-        JLabel outputMinimumLabel = new JLabel("output minimum:");
+        NumberFormat format = NumberFormat.getNumberInstance();
+        format.setMaximumFractionDigits(Integer.MAX_VALUE);
+
+        JLabel outputMinimumXLabel = new JLabel("output minimum x:");
         gridBagConstraints = new GridBagConstraints();
         gridBagConstraints.anchor = SOUTH;
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 9;
         gridBagConstraints.fill = HORIZONTAL;
-        gridBagConstraints.insets = new Insets(5, 10, 0, 5);
+        gridBagConstraints.insets = new Insets(SPACE_HALF_INT, SPACE_INT, 0, SPACE_HALF_INT);
+        gridBagConstraints.weightx = 1;
         gridBagConstraints.weighty = 1;
-        frame.getContentPane().add(outputMinimumLabel, gridBagConstraints);
+        frame.getContentPane().add(outputMinimumXLabel, gridBagConstraints);
 
-        JFormattedTextField outputMinimumField = new JFormattedTextField();
+        final JFormattedTextField outputMinimumXField = new JFormattedTextField(format);
+        outputMinimumXField.addPropertyChangeListener("value", new OutputListener(outputMinimumXField, outputMinimumX, outputMinimumX, outputMaximumX, fitX, width));
         gridBagConstraints = new GridBagConstraints();
         gridBagConstraints.anchor = NORTH;
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 10;
         gridBagConstraints.fill = HORIZONTAL;
-        gridBagConstraints.insets = new Insets(0, 10, 5, 5);
+        gridBagConstraints.insets = new Insets(0, SPACE_INT, SPACE_HALF_INT, SPACE_HALF_INT);
+        gridBagConstraints.weightx = 1;
         gridBagConstraints.weighty = 1;
-        frame.getContentPane().add(outputMinimumField, gridBagConstraints);
+        frame.getContentPane().add(outputMinimumXField, gridBagConstraints);
 
-        JLabel outputMaximumLabel = new JLabel("output maximum:");
+        JLabel outputMaximumXLabel = new JLabel("output maximum x:");
+        gridBagConstraints = new GridBagConstraints();
+        gridBagConstraints.anchor = SOUTH;
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 9;
+        gridBagConstraints.fill = HORIZONTAL;
+        gridBagConstraints.insets = new Insets(SPACE_HALF_INT, SPACE_HALF_INT, 0, SPACE_HALF_INT);
+        gridBagConstraints.weightx = 1;
+        gridBagConstraints.weighty = 1;
+        frame.getContentPane().add(outputMaximumXLabel, gridBagConstraints);
+
+        final JFormattedTextField outputMaximumXField = new JFormattedTextField(format);
+        outputMaximumXField.addPropertyChangeListener("value", new OutputListener(outputMaximumXField, outputMaximumX, outputMinimumX, outputMaximumX, fitX, width));
+        gridBagConstraints = new GridBagConstraints();
+        gridBagConstraints.anchor = NORTH;
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 10;
+        gridBagConstraints.fill = HORIZONTAL;
+        gridBagConstraints.insets = new Insets(0, SPACE_HALF_INT, SPACE_HALF_INT, SPACE_HALF_INT);
+        gridBagConstraints.weightx = 1;
+        gridBagConstraints.weighty = 1;
+        frame.getContentPane().add(outputMaximumXField, gridBagConstraints);
+
+        JLabel outputMinimumYLabel = new JLabel("output minimum y:");
         gridBagConstraints = new GridBagConstraints();
         gridBagConstraints.anchor = SOUTH;
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 11;
         gridBagConstraints.fill = HORIZONTAL;
-        gridBagConstraints.insets = new Insets(5, 10, 0, 5);
+        gridBagConstraints.insets = new Insets(SPACE_HALF_INT, SPACE_INT, 0, SPACE_HALF_INT);
+        gridBagConstraints.weightx = 1;
         gridBagConstraints.weighty = 1;
-        frame.getContentPane().add(outputMaximumLabel, gridBagConstraints);
+        frame.getContentPane().add(outputMinimumYLabel, gridBagConstraints);
 
-        JFormattedTextField outputMaximumField = new JFormattedTextField();
+        JFormattedTextField outputMinimumYField = new JFormattedTextField(format);
+        outputMinimumYField.addPropertyChangeListener("value", new OutputListener(outputMinimumYField, outputMinimumY, outputMinimumY, outputMaximumY, fitY, height));
         gridBagConstraints = new GridBagConstraints();
         gridBagConstraints.anchor = NORTH;
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 12;
         gridBagConstraints.fill = HORIZONTAL;
-        gridBagConstraints.insets = new Insets(0, 10, 10, 5);
+        gridBagConstraints.insets = new Insets(0, SPACE_INT, SPACE_INT, SPACE_HALF_INT);
+        gridBagConstraints.weightx = 1;
         gridBagConstraints.weighty = 1;
-        frame.getContentPane().add(outputMaximumField, gridBagConstraints);
+        frame.getContentPane().add(outputMinimumYField, gridBagConstraints);
+
+        JLabel outputMaximumYLabel = new JLabel("output maximum y:");
+        gridBagConstraints = new GridBagConstraints();
+        gridBagConstraints.anchor = SOUTH;
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 11;
+        gridBagConstraints.fill = HORIZONTAL;
+        gridBagConstraints.insets = new Insets(SPACE_HALF_INT, SPACE_HALF_INT, 0, SPACE_HALF_INT);
+        gridBagConstraints.weightx = 1;
+        gridBagConstraints.weighty = 1;
+        frame.getContentPane().add(outputMaximumYLabel, gridBagConstraints);
+
+        JFormattedTextField outputMaximumYField = new JFormattedTextField(format);
+        outputMaximumYField.addPropertyChangeListener("value", new OutputListener(outputMaximumYField, outputMaximumY, outputMinimumY, outputMaximumY, fitY, height));
+        gridBagConstraints = new GridBagConstraints();
+        gridBagConstraints.anchor = NORTH;
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 12;
+        gridBagConstraints.fill = HORIZONTAL;
+        gridBagConstraints.insets = new Insets(0, SPACE_HALF_INT, SPACE_INT, SPACE_HALF_INT);
+        gridBagConstraints.weightx = 1;
+        gridBagConstraints.weighty = 1;
+        frame.getContentPane().add(outputMaximumYField, gridBagConstraints);
 
         tableModel = new DefaultTableModel(
             new Object [][] {},
@@ -354,13 +469,13 @@ public final class Setup {
         tablePane.setViewportView(table);
 
         gridBagConstraints = new GridBagConstraints();
-        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridx = 2;
         gridBagConstraints.gridy = 0;
         gridBagConstraints.gridheight = 13;
         gridBagConstraints.fill = BOTH;
         gridBagConstraints.weightx = 1;
         gridBagConstraints.weighty = 1;
-        gridBagConstraints.insets = new Insets(10, 5, 10, 10);
+        gridBagConstraints.insets = new Insets(SPACE_INT, SPACE_HALF_INT, SPACE_INT, SPACE_INT);
         frame.getContentPane().add(tablePane, gridBagConstraints);
 
         frame.pack();
