@@ -2,6 +2,10 @@ package io.github.guiritter.bézier_drawer;
 
 import static java.lang.Math.min;
 
+/**
+ * Computes the binomial coefficient.
+ * @author Guilherme Alan Ritter
+ */
 public final class BinomialCoefficient {
 
     private long c;

@@ -10,9 +10,17 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.UIManager;
 
+/**
+ * Allows the drawing of a Bézier curve. Opens one window that displays
+ * the curve and allows the manipulation of its control points.
+ * Opens another window that allows the setup of runtime parameters
+ * and displays control point data in a table.
+ * This is the main class that, besides opening the windows,
+ * provides access control to variables that might be read from and written to
+ * at the same time, such as the control points.
+ * @author Guilherme Alan Ritter
+ */
 public final class BézierDrawer {
-
-    private static final int backgroundColor[] = new int[]{255, 255, 255, 0};
 
     private static final LinkedList<Point> BézierControlPointList = new LinkedList();
 
@@ -20,6 +28,10 @@ public final class BézierDrawer {
 
     private static final int curveColor[] = new int[]{0, 0, 0, 255};
 
+    /**
+     * Window that displays the curve and allows the manipulation
+     * of its control points.
+     */
     private static final Edit edit;
 
     public static final Font font = new Font("DejaVu Sans", 0, 12); // NOI18N
@@ -28,38 +40,77 @@ public final class BézierDrawer {
 
     private static final Semaphore semaphore = new Semaphore(1, true);
 
+    /**
+     * Window that sets up runtime parameters and displays control point data
+     * in a table.
+     */
     private static final Setup setup;
 
+    /**
+     * Time step used to compute the curve. Inverse to the amount of points
+     * in the curve.
+     */
     private static final Wrapper step = new Wrapper();
 
+    /**
+     * Distance between graphical user interface components.
+     */
     public static final int SPACE_INT;
 
+    /**
+     * Distance between graphical user interface components.
+     */
     public static final Dimension SPACE_DIMENSION;
 
+    /**
+     * Half distance between graphical user interface components.
+     */
     public static final int SPACE_HALF_INT;
 
+    /**
+     * Half distance between graphical user interface components.
+     */
     public static final Dimension SPACE_HALF_DIMENSION;
 
+    /**
+     * Inverse to frames per second.
+     * @return
+     */
     static long getFramePeriod() {
         return setup.getFramePeriod();
     }
 
+    /**
+     * Adds a new control point to the list and adds a row in the table
+     * to represent this point.
+     * @param x
+     * @param y
+     */
     static void addPoint(int x, int y) {
         semaphore.acquireUninterruptibly();
-        color = setup.getNewPointColor();
+        color = setup.getPointColor();
         BézierControlPointList.add(new Point(x, y, color, setup.getPointRadius()));
         setup.addPoint(x, y, color);
         semaphore.release();
     }
 
-    static void addPoint(int x, int y, int i) {
+    /**
+     * Adds a new control point to the list and adds a row in the table
+     * to represent this point.
+     * @param x
+     * @param y
+     */
+    static void addPoint(int x, int y, int index) {
         semaphore.acquireUninterruptibly();
-        color = setup.getNewPointColor();
-        BézierControlPointList.add(i, new Point(x, y, color, setup.getPointRadius()));
-        setup.addPoint(x, y, color, i);
+        color = setup.getPointColor();
+        BézierControlPointList.add(index, new Point(x, y, color, setup.getPointRadius()));
+        setup.addPoint(x, y, color, index);
         semaphore.release();
     }
 
+    /**
+     * @return amount of control points
+     */
     static int getPointAmount() {
         semaphore.acquireUninterruptibly();
         int returnInt = BézierControlPointList.size();
@@ -67,6 +118,11 @@ public final class BézierDrawer {
         return returnInt;
     }
 
+    /**
+     * Clears the list passed by parameter and adds all control points
+     * to this list.
+     * @param list
+     */
     static void getPointList(LinkedList<Point> list) {
         semaphore.acquireUninterruptibly();
         list.clear();
@@ -74,28 +130,29 @@ public final class BézierDrawer {
         semaphore.release();
     }
 
+    /**
+     * @param list list of control points
+     * @param step time step
+     * @param point curve color wrapper
+     */
     static void getRenderData(LinkedList<Point> list, Wrapper step, Point point) {
         semaphore.acquireUninterruptibly();
         list.clear();
         list.addAll(BézierControlPointList);
-        step.value = BézierDrawer.step.value; // TODO
+        step.value = BézierDrawer.step.value;
         System.arraycopy(BézierDrawer.curveColor, 0, point.color, 0, 4);
         semaphore.release();
     }
 
+    /**
+     * Removes a control point from the list and removes the corresponding row
+     * from the table.
+     * @param point
+     */
     static void removePoint(Point point) {
         semaphore.acquireUninterruptibly();
         setup.removePoint(BézierControlPointList.indexOf(point));
         BézierControlPointList.remove(point);
-        semaphore.release();
-    }
-
-    static void setBackgroundColor(int r, int g, int b, int a) {
-        semaphore.acquireUninterruptibly();
-        backgroundColor[0] = r;
-        backgroundColor[1] = g;
-        backgroundColor[2] = b;
-        backgroundColor[3] = a;
         semaphore.release();
     }
 
@@ -108,20 +165,20 @@ public final class BézierDrawer {
         semaphore.release();
     }
 
+    /**
+     * @param step time step
+     */
     static void setCurveStep(double step) {
         semaphore.acquireUninterruptibly();
         BézierDrawer.step.value = step;
         semaphore.release();
     }
 
+    /**
+     * @param period inverse to frames per second
+     */
     static void setFramePeriod(long period) {
         edit.setFramePeriod(period);
-    }
-
-    static void setStep(double step) {
-        semaphore.acquireUninterruptibly();
-        BézierDrawer.step.value = step;
-        semaphore.release();
     }
 
     static {

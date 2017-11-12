@@ -4,6 +4,10 @@ import static java.lang.Math.pow;
 import static java.lang.Math.round;
 import java.util.LinkedList;
 
+/**
+ * Computes a Bézier curve from a list of control points.
+ * @author Guilherme Alan Ritter
+ */
 public final class BézierCurve {
 
     private double b;
@@ -22,6 +26,10 @@ public final class BézierCurve {
 
     private double y;
 
+    /**
+     * Computes a point in the curve for a given {@code 0 ≤ t ≤ 1}.
+     * @param t
+     */
     public void op(double t) {
         x = 0;
         y = 0;

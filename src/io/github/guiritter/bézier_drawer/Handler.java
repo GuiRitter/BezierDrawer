@@ -10,10 +10,19 @@ import java.awt.image.WritableRaster;
 import java.util.LinkedList;
 import java.util.concurrent.Semaphore;
 
+/**
+ * Thread that runs whenever there are events to handle. Used to keep the
+ * graphical user interface's thread from blocking
+ * while handling these events.
+ * @author Guilherme Alan Ritter
+ */
 public final class Handler implements Runnable{
 
     private final WritableRaster backgroundColorRaster;
 
+    /**
+     * Local copy of the control points.
+     */
     private final LinkedList<Point> BézierControlPointList = new LinkedList();
 
     public int color[] = new int[4];
@@ -22,6 +31,9 @@ public final class Handler implements Runnable{
 
     private final LinkedList<Event> eventList = new LinkedList<>();
 
+    /**
+     * Curve display area height.
+     */
     private final int height;
 
     private Point pointSelected = null;
@@ -30,10 +42,16 @@ public final class Handler implements Runnable{
 
     private final WrapperPoint pointSelectedWrapper;
 
+    /**
+     * Keeps the thread sleeping until there are events to process.
+     */
     private final Semaphore semaphore = new Semaphore(0, true);
 
     private final Setup setup;
 
+    /**
+     * Curve display area width.
+     */
     private final int width;
 
     private int x;

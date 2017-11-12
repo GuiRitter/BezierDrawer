@@ -4,16 +4,30 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import javax.swing.JFormattedTextField;
 
+/**
+ * Updates the desired coordinate range converter
+ * when the minimum and maximum values are changed.
+ * @author Guilherme Alan Ritter
+ */
 public final class OutputListener implements PropertyChangeListener{
 
+    /**
+     * Range converter.
+     */
     private final Wrapper<FitLinear> fitWrapper;
 
+    /**
+     * Field monitored by this listener.
+     */
     private final JFormattedTextField formattedTextField;
 
     private final Wrapper<Double> maximumWrapper;
 
     private final Wrapper<Double> minimumWrapper;
 
+    /**
+     * Will be equal to either the minimum or the maximum.
+     */
     private final Wrapper<Integer> outputWrapper;
 
     private Double valueDouble;

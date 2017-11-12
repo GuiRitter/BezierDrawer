@@ -18,6 +18,13 @@ import javax.swing.JOptionPane;
 import static javax.swing.JOptionPane.ERROR_MESSAGE;
 import static javax.swing.JOptionPane.WARNING_MESSAGE;
 
+/**
+ * Curve display and manipulation window. Besides displaying the curve
+ * and its control points, allows points to be inserted, moved and removed,
+ * curve and points colors to be changed and background to be set to a solid color
+ * or a picture.
+ * @author Guilherme Alan Ritter
+ */
 @SuppressWarnings("CallToPrintStackTrace")
 public final class Edit {
 
@@ -37,8 +44,14 @@ public final class Edit {
 
     private Handler handler;
 
+    /**
+     * Curve display area height.
+     */
     private int height;
 
+    /**
+     * Curve display area component.
+     */
     private final ImageComponentMultiple imageComponent;
 
     private final Point lastPoint = new Point(0, 0, new int[4], 0);
@@ -51,19 +64,42 @@ public final class Edit {
 
     private final Setup setup;
 
+    /**
+     * Runs the renderer at fixed intervals.
+     */
     private final Timer timer;
 
+    /**
+     * Curve display area width.
+     */
     private int width;
 
+    /**
+     * Prints a stack trace and shows a dialog
+     * displaying either a warning or an error.
+     * @param ex
+     * @param title
+     * @param messageType
+     */
     public void showDialog(Exception ex, String title, int messageType) {
         ex.printStackTrace();
         JOptionPane.showMessageDialog(frame, ex.getLocalizedMessage(), title, messageType);
     }
 
+    /**
+     * Prints a stack trace and shows a dialog
+     * displaying an error.
+     * @param ex
+     */
     public void showError(Exception ex) {
         showDialog(ex, "error", ERROR_MESSAGE);
     }
 
+    /**
+     * Prints a stack trace and shows a dialog
+     * displaying a warning.
+     * @param ex
+     */
     public void showWarning(Exception ex) {
         showDialog(ex, "warning", WARNING_MESSAGE);
     }

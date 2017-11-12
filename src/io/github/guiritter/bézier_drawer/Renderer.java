@@ -7,26 +7,60 @@ import static java.lang.Math.min;
 import java.util.LinkedList;
 import java.util.TimerTask;
 
+/**
+ * Thread that runs at a fixed interval to display the curve, its control points
+ * and a background, which can be a solid color or an image.
+ * @author Guilherme Alan Ritter
+ */
 public final class Renderer extends TimerTask {
 
+    /**
+     * Local copy of the control points.
+     */
     private final LinkedList<Point> BézierControlPointList = new LinkedList();
 
     private final BézierCurve curve;
 
+    /**
+     * Curve display area height.
+     */
     private int height;
 
+    /**
+     * Curve display area component.
+     */
     private final ImageComponent imageComponent;
 
+    /**
+     * Used to get the curve's computed points from one place
+     * and its color from another.
+     */
     private final Point point = new Point(0, 0, new int[4], 0);
 
+    /**
+     * Curve display area raster.
+     */
     private final WritableRaster raster;
 
+    /**
+     * Time step used to compute the curve. Inverse to the amount of points
+     * in the curve.
+     */
     private final Wrapper<Double> step = new Wrapper<>();
 
+    /**
+     * Time that is stepped from 0 to 1.
+     */
     private double t;
 
+    /**
+     * Used to clear the curve display area.
+     */
     private final int transparency[] = new int[]{0, 0, 0, 0};
 
+    /**
+     * Curve display area width.
+     */
     private int width;
 
     private int x;
@@ -41,6 +75,11 @@ public final class Renderer extends TimerTask {
 
     private int yLow;
 
+    /**
+     * Renders a control point as a square centered on the point's coordinates.
+     * Avoids image boundaries.
+     * @param point
+     */
     private void renderPoint(Point point) {
         xLow = max(((int) point.x) - point.radius + 1, 0);
         xHigh = min(((int) point.x) + point.radius - 1, width - 1);
@@ -53,6 +92,10 @@ public final class Renderer extends TimerTask {
         }
     }
 
+    /**
+     * In the following order: clears the curve display area, renders the curve,
+     * and renders the control points.
+     */
     @Override
     public void run() {
         BézierDrawer.getRenderData(BézierControlPointList, step, point);

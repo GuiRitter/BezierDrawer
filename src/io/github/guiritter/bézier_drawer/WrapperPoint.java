@@ -1,16 +1,10 @@
 package io.github.guiritter.bézier_drawer;
 
-public final class WrapperPoint {
+/**
+ * Adds index information to a point wrapper.
+ * @author Guilherme Alan Ritter
+ */
+public final class WrapperPoint extends Wrapper<Point>{
 
     public int index;
-
-    public Point value;
-
-    public WrapperPoint() {
-        this.value =  null;
-    }
-
-    public WrapperPoint(Point value) {
-        this.value = value;
-    }
 }

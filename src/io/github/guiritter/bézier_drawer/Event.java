@@ -1,14 +1,41 @@
 package io.github.guiritter.bézier_drawer;
 
+/**
+ * User interactions that require an action.
+ * @author Guilherme Alan Ritter
+ */
 public final class Event {
 
     public enum Type {
 
+        /**
+         * Paint the background with a solic color.
+         */
         BACKGROUND_COLOR,
+
+        /**
+         * Insert a point.
+         */
         CLICKED,
+
+        /**
+         * Moving a point.
+         */
         DRAGGED,
+
+        /**
+         * Started moving a point.
+         */
         PRESSED,
+
+        /**
+         * Right clicked a point.
+         */
         PRESSED_WAIT,
+
+        /**
+         * Stopped moving a point.
+         */
         RELEASED
     }
 

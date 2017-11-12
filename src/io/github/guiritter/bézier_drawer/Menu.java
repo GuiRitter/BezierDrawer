@@ -25,6 +25,14 @@ import javax.swing.JPopupMenu;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
 
+/**
+ * Curve display area's right click menu. If a control point has been clicked,
+ * allows its removal, setting its color, setting its position or its radius.
+ * Otherwise, allows the insertion of new points at specified indexes,
+ * setting for the background either a solid color or an image or
+ * setting the curve's color.
+ * @author Guilherme Alan Ritter
+ */
 public final class Menu {
 
     private final WritableRaster backgroundRaster;
@@ -37,8 +45,14 @@ public final class Menu {
 
     private final Edit edit;
 
+    /**
+     * Curve display area frame.
+     */
     private final JFrame editFrame;
 
+    /**
+     * Right click menu items that do not relate to control points.
+     */
     private final LinkedList<JMenuItem> elseItemList = new LinkedList<>();
 
     private File file;
@@ -55,6 +69,10 @@ public final class Menu {
 
     private Point point;
 
+
+    /**
+     * Right click menu items that relate to control points.
+     */
     private final LinkedList<JMenuItem> pointItemList = new LinkedList<>();
 
     final Semaphore pointSelectedSemaphore;

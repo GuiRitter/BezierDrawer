@@ -9,6 +9,10 @@ import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
 
+/**
+ * Allows the insertion of a point's coordinates in display space.
+ * @author Guilherme Alan Ritter
+ */
 public final class PositionPanel {
 
     final JPanel panel;

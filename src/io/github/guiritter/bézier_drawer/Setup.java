@@ -33,18 +33,36 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
+/**
+ * Graphical user interface that sets up runtime parameters and displays a table
+ * displaying the curve's control points. It's possible to change
+ * the curve display's frames per second, the amount of points that are used
+ * to render the curve, the radius and color of newly inserted control points,
+ * and optionally conversion values so the control point coordinates
+ * are displayed in a given desired range. The table shows
+ * each control point's index, color, screen coordinates and output coordinates.
+ * @author Guilherme Alan Ritter
+ */
 public final class Setup {
-
-    private final int colorInt[] = new int[4];
 
     private Color colorColor;
 
     private final JSpinner curvePointAmountSpinner;
 
+    /**
+     * Converts the control point's x coordinate.
+     */
     private final Wrapper<FitLinear> fitX = new Wrapper<>();
 
+
+    /**
+     * Converts the control point's y coordinate.
+     */
     private final Wrapper<FitLinear> fitY = new Wrapper<>();
 
+    /**
+     * Format for the frame period label's text.
+     */
     private static final String fpsString = "frame period (ms) = %f FPS:";
 
     final JFrame frame;
@@ -53,18 +71,39 @@ public final class Setup {
 
     private final JSpinner framePeriodSpinner;
 
+    /**
+     * Curve display area height.
+     */
     private final Wrapper<Integer> height = new Wrapper<>();
 
+    /**
+     * Maximum value for x coordinate for desired output range.
+     */
     private final Wrapper<Double> outputMaximumX = new Wrapper<>();
 
+    /**
+     * Maximum value for y coordinate for desired output range.
+     */
     private final Wrapper<Double> outputMaximumY = new Wrapper<>();
 
+    /**
+     * Minimum value for x coordinate for desired output range.
+     */
     private final Wrapper<Double> outputMinimumX = new Wrapper<>();
 
+    /**
+     * Minimum value for y coordinate for desired output range.
+     */
     private final Wrapper<Double> outputMinimumY = new Wrapper<>();
 
+    /**
+     * Value for x coordinate for desired output range.
+     */
     private double outputX;
 
+    /**
+     * Value for y coordinate for desired output range.
+     */
     private double outputY;
 
     private final JButton pointColorButton;
@@ -80,8 +119,17 @@ public final class Setup {
 
     private final DefaultTableModel tableModel;
 
+    /**
+     * Curve display area width.
+     */
     private final Wrapper<Integer> width = new Wrapper<>();
 
+    /**
+     * Adds a row to the table according to the newly added control point.
+     * @param x
+     * @param y
+     * @param color
+     */
     public void addPoint(int x, int y, int color[]) {
         if (fitX.value == null) {
             outputX = 0;
@@ -93,6 +141,13 @@ public final class Setup {
         tableModel.addRow(new Object[]{tableModel.getRowCount(), x, y, outputX, outputY, Arrays.copyOf(color, color.length)});
     }
 
+    /**
+     * Adds a row to the table according to the newly added control point.
+     * @param x
+     * @param y
+     * @param color
+     * @param i
+     */
     public void addPoint(int x, int y, int color[], int i) {
         if (fitX.value == null) {
             outputX = 0;
@@ -101,10 +156,16 @@ public final class Setup {
             outputX = fitX.value.f(x);
             outputY = fitY.value.f(y);
         }
-        tableModel.insertRow(i, new Object[]{tableModel.getRowCount(), x, y, outputX, outputY, Arrays.copyOf(color, color.length)}); // TODO fit
+        tableModel.insertRow(i, new Object[]{tableModel.getRowCount(), x, y, outputX, outputY, Arrays.copyOf(color, color.length)});
         updateIndex(i);
     }
 
+    /**
+     * Generates a color with a good contrast to another color, by selecting
+     * the color with the highest distance in the RGB cube.
+     * @param color
+     * @return
+     */
     private static Color getContrast(Color color) {
         return new Color(
          (color.getRed()   < 128) ? 255 : 0,
@@ -114,6 +175,12 @@ public final class Setup {
         );
     }
 
+    /**
+     * Generates a color with a good contrast to another color, by selecting
+     * the color with the highest distance in the RGB cube.
+     * @param color
+     * @return
+     */
     private static Color getContrast(int color[]) {
         return new Color(
          (color[0] < 128) ? 255 : 0,
@@ -131,7 +198,7 @@ public final class Setup {
         return ((SpinnerNumberModel) framePeriodSpinner.getModel()).getNumber().longValue();
     }
 
-    public int[] getNewPointColor() {
+    public int[] getPointColor() {
         colorColor = pointColorButton.getBackground();
         return new int[]{colorColor.getRed(), colorColor.getGreen(), colorColor.getBlue(), colorColor.getAlpha()};
     }
@@ -140,15 +207,28 @@ public final class Setup {
         return ((SpinnerNumberModel) pointRadiusSpinner.getModel()).getNumber().intValue();
     }
 
+    /**
+     * Removes a row in the table when a control point is removed.
+     * @param i
+     */
     public void removePoint(int i) {
         tableModel.removeRow(i);
         updateIndex(i);
     }
 
+    /**
+     * Formats the frame period label's text.
+     */
     private void setFPSString() {
         framePeriodLabel.setText(String.format(fpsString, 1000d / ((double) getFramePeriod())));
     }
 
+    /**
+     * Updates the table with a control point's new coordinates.
+     * @param i
+     * @param x
+     * @param y
+     */
     public void setPoint(int i, int x, int y) {
         if (fitX.value == null) {
             outputX = 0;
@@ -163,17 +243,31 @@ public final class Setup {
         tableModel.setValueAt(outputY, i, TABLE_COLUMN_OUTPUT_Y);
     }
 
+    /**
+     * Updates the table with a control point's new color.
+     * @param i
+     * @param color
+     */
     public void setPointColor(int i, int color[]) {
         tableModel.setValueAt(Arrays.copyOf(color, color.length), i, TABLE_COLUMN_COLOR);
         frame.revalidate();
         frame.repaint();
     }
 
+    /**
+     * Updates these variables when the program is initialized.
+     * @param width
+     * @param height
+     */
     public void setSize(int width, int height) {
         this.width.value = width - 1;
         this.height.value = height - 1;
     }
 
+    /**
+     * Updates the table when a control point is removed.
+     * @param i
+     */
     public void updateIndex(int i) {
         for (i = 0; i < tableModel.getRowCount(); i++) {
             tableModel.setValueAt(i, i, TABLE_COLUMN_INDEX);
@@ -415,10 +509,6 @@ public final class Setup {
                 String.class, Integer.class, Integer.class, Double.class, Double.class, Integer[].class
             };
 
-            boolean[] canEdit = new boolean [] {
-                false, true, true, false, false, false
-            };
-
             @Override
             public Class getColumnClass(int columnIndex) {
                 return types [columnIndex];
@@ -426,7 +516,7 @@ public final class Setup {
 
             @Override
             public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return canEdit [columnIndex];
+                return false;
             }
         };
 
@@ -482,8 +572,4 @@ public final class Setup {
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
     }
-
-//    public static void main(String args[]) {
-//        Setup setup = new Setup();
-//    }
 }
