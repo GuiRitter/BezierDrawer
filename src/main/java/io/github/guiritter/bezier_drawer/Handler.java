@@ -1,11 +1,11 @@
-package io.github.guiritter.bézier_drawer;
+package io.github.guiritter.bezier_drawer;
 
-import static io.github.guiritter.bézier_drawer.Event.Type.BACKGROUND_COLOR;
-import static io.github.guiritter.bézier_drawer.Event.Type.CLICKED;
-import static io.github.guiritter.bézier_drawer.Event.Type.DRAGGED;
-import static io.github.guiritter.bézier_drawer.Event.Type.PRESSED;
-import static io.github.guiritter.bézier_drawer.Event.Type.PRESSED_WAIT;
-import static io.github.guiritter.bézier_drawer.Event.Type.RELEASED;
+import static io.github.guiritter.bezier_drawer.Event.Type.BACKGROUND_COLOR;
+import static io.github.guiritter.bezier_drawer.Event.Type.CLICKED;
+import static io.github.guiritter.bezier_drawer.Event.Type.DRAGGED;
+import static io.github.guiritter.bezier_drawer.Event.Type.PRESSED;
+import static io.github.guiritter.bezier_drawer.Event.Type.PRESSED_WAIT;
+import static io.github.guiritter.bezier_drawer.Event.Type.RELEASED;
 import java.awt.image.WritableRaster;
 import java.util.LinkedList;
 import java.util.concurrent.Semaphore;
@@ -23,7 +23,7 @@ public final class Handler implements Runnable{
     /**
      * Local copy of the control points.
      */
-    private final LinkedList<Point> BézierControlPointList = new LinkedList();
+    private final LinkedList<Point> BézierControlPointList = new LinkedList<>();
 
     public int color[] = new int[4];
 
@@ -112,9 +112,9 @@ public final class Handler implements Runnable{
                     break;
                 case CLICKED:
                     if (event.i > -1) {
-                        BézierDrawer.addPoint(event.x, event.y, event.i);
+                        BezierDrawer.addPoint(event.x, event.y, event.i);
                     } else {
-                        BézierDrawer.addPoint(event.x, event.y);
+                        BezierDrawer.addPoint(event.x, event.y);
                     }
                     break;
                 case DRAGGED:
@@ -132,7 +132,7 @@ public final class Handler implements Runnable{
                     break;
                 case PRESSED:
                 case PRESSED_WAIT:
-                    BézierDrawer.getPointList(BézierControlPointList);
+                    BezierDrawer.getPointList(BézierControlPointList);
                     pointSelected = null;
                     for (Point point : BézierControlPointList) {
                         if (point.isIn(event.x, event.y)) {

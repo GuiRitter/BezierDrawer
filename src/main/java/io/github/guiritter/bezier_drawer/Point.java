@@ -1,4 +1,4 @@
-package io.github.guiritter.bézier_drawer;
+package io.github.guiritter.bezier_drawer;
 
 import java.util.Arrays;
 
@@ -21,8 +21,8 @@ public final class Point {
     int y;
 
     /**
-     * @param x
-     * @param y
+     * @param x coordinate
+     * @param y coordinate
      * @return whether the received coordinate pair is inside the bounds of this control point's representation
      */
     public boolean isIn(int x, int y) {

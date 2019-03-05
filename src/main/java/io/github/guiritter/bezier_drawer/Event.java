@@ -1,4 +1,4 @@
-package io.github.guiritter.bézier_drawer;
+package io.github.guiritter.bezier_drawer;
 
 /**
  * User interactions that require an action.

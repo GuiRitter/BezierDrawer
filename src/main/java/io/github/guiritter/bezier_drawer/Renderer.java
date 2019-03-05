@@ -1,6 +1,6 @@
-package io.github.guiritter.bézier_drawer;
+package io.github.guiritter.bezier_drawer;
 
-import io.github.guiritter.imagecomponent.ImageComponent;
+import io.github.guiritter.image_component.ImageComponent;
 import java.awt.image.WritableRaster;
 import static java.lang.Math.max;
 import static java.lang.Math.min;
@@ -17,9 +17,9 @@ public final class Renderer extends TimerTask {
     /**
      * Local copy of the control points.
      */
-    private final LinkedList<Point> BézierControlPointList = new LinkedList();
+    private final LinkedList<Point> BézierControlPointList = new LinkedList<>();
 
-    private final BézierCurve curve;
+    private final BezierCurve curve;
 
     /**
      * Curve display area height.
@@ -98,7 +98,7 @@ public final class Renderer extends TimerTask {
      */
     @Override
     public void run() {
-        BézierDrawer.getRenderData(BézierControlPointList, step, point);
+        BezierDrawer.getRenderData(BézierControlPointList, step, point);
         width = raster.getWidth();
         height = raster.getHeight();
         for (y = 0; y < height; y++) {
@@ -122,6 +122,6 @@ public final class Renderer extends TimerTask {
     public Renderer(WritableRaster raster, ImageComponent imageComponent) {
         this.raster = raster;
         this.imageComponent = imageComponent;
-        curve = new BézierCurve(BézierControlPointList, point);
+        curve = new BezierCurve(BézierControlPointList, point);
     }
 }

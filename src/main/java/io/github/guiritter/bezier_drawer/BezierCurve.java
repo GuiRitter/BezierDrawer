@@ -1,4 +1,4 @@
-package io.github.guiritter.bézier_drawer;
+package io.github.guiritter.bezier_drawer;
 
 import static java.lang.Math.pow;
 import static java.lang.Math.round;
@@ -8,7 +8,7 @@ import java.util.LinkedList;
  * Computes a Bézier curve from a list of control points.
  * @author Guilherme Alan Ritter
  */
-public final class BézierCurve {
+public final class BezierCurve {
 
     private double b;
 
@@ -28,7 +28,7 @@ public final class BézierCurve {
 
     /**
      * Computes a point in the curve for a given {@code 0 ≤ t ≤ 1}.
-     * @param t
+     * @param t curve parameter
      */
     public void op(double t) {
         x = 0;
@@ -43,7 +43,7 @@ public final class BézierCurve {
         output.y = (int) round(y);
     }
 
-    public BézierCurve(LinkedList<Point> BézierControlPointList, Point output) {
+    public BezierCurve(LinkedList<Point> BézierControlPointList, Point output) {
         this.BézierControlPointList = BézierControlPointList;
         this.output = output;
     }

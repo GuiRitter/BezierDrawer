@@ -1,4 +1,4 @@
-package io.github.guiritter.bézier_drawer;
+package io.github.guiritter.bezier_drawer;
 
 /**
  * Adds index information to a point wrapper.

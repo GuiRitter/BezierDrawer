@@ -1,4 +1,4 @@
-package io.github.guiritter.bézier_drawer;
+package io.github.guiritter.bezier_drawer;
 
 /**
  * A linear equation constructed from two points.
@@ -19,7 +19,7 @@ public final class FitLinear {
 
     /**
      * Computes y(x).
-     * @param x
+     * @param x input
      * @return y
      */
     public double f(double x) {

@@ -1,4 +1,4 @@
-package io.github.guiritter.bézier_drawer;
+package io.github.guiritter.bezier_drawer;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;

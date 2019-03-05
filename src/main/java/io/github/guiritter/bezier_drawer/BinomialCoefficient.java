@@ -1,4 +1,4 @@
-package io.github.guiritter.bézier_drawer;
+package io.github.guiritter.bezier_drawer;
 
 import static java.lang.Math.min;
 
@@ -17,7 +17,7 @@ public final class BinomialCoefficient {
      * https://en.wikipedia.org/wiki/Binomial_coefficient
      * @param n the number that goes above
      * @param k the number that goes below
-     * @return
+     * @return binomial coefficient of the given values
      */
     public long op(long n, long k) {
         if ((k < 0) || (k > n))

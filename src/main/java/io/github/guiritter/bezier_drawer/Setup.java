@@ -1,8 +1,8 @@
-package io.github.guiritter.bézier_drawer;
+package io.github.guiritter.bezier_drawer;
 
-import static io.github.guiritter.bézier_drawer.BézierDrawer.SPACE_HALF_INT;
-import static io.github.guiritter.bézier_drawer.BézierDrawer.SPACE_INT;
-import static io.github.guiritter.bézier_drawer.BézierDrawer.fontBold;
+import static io.github.guiritter.bezier_drawer.BezierDrawer.SPACE_HALF_INT;
+import static io.github.guiritter.bezier_drawer.BezierDrawer.SPACE_INT;
+import static io.github.guiritter.bezier_drawer.BezierDrawer.fontBold;
 import java.awt.Color;
 import static java.awt.Color.BLACK;
 import java.awt.Component;
@@ -126,9 +126,9 @@ public final class Setup {
 
     /**
      * Adds a row to the table according to the newly added control point.
-     * @param x
-     * @param y
-     * @param color
+     * @param x coordinate
+     * @param y coordinate
+     * @param color RGB
      */
     public void addPoint(int x, int y, int color[]) {
         if (fitX.value == null) {
@@ -143,10 +143,10 @@ public final class Setup {
 
     /**
      * Adds a row to the table according to the newly added control point.
-     * @param x
-     * @param y
-     * @param color
-     * @param i
+     * @param x coordinate
+     * @param y coordinate
+     * @param color RGB
+     * @param i position
      */
     public void addPoint(int x, int y, int color[], int i) {
         if (fitX.value == null) {
@@ -209,7 +209,7 @@ public final class Setup {
 
     /**
      * Removes a row in the table when a control point is removed.
-     * @param i
+     * @param i position
      */
     public void removePoint(int i) {
         tableModel.removeRow(i);
@@ -225,9 +225,9 @@ public final class Setup {
 
     /**
      * Updates the table with a control point's new coordinates.
-     * @param i
-     * @param x
-     * @param y
+     * @param i position
+     * @param x coordinate
+     * @param y coordinate
      */
     public void setPoint(int i, int x, int y) {
         if (fitX.value == null) {
@@ -245,8 +245,8 @@ public final class Setup {
 
     /**
      * Updates the table with a control point's new color.
-     * @param i
-     * @param color
+     * @param i position
+     * @param color RGB
      */
     public void setPointColor(int i, int color[]) {
         tableModel.setValueAt(Arrays.copyOf(color, color.length), i, TABLE_COLUMN_COLOR);
@@ -256,8 +256,8 @@ public final class Setup {
 
     /**
      * Updates these variables when the program is initialized.
-     * @param width
-     * @param height
+     * @param width available drawing size on screen
+     * @param height available drawing size on screen
      */
     public void setSize(int width, int height) {
         this.width.value = width - 1;
@@ -266,7 +266,7 @@ public final class Setup {
 
     /**
      * Updates the table when a control point is removed.
-     * @param i
+     * @param i position
      */
     public void updateIndex(int i) {
         for (i = 0; i < tableModel.getRowCount(); i++) {
@@ -295,7 +295,7 @@ public final class Setup {
         framePeriodSpinner = new JSpinner(new SpinnerNumberModel(34, 1, Long.MAX_VALUE, 1));
         framePeriodSpinner.addChangeListener((ChangeEvent e) -> {
 
-            BézierDrawer.setFramePeriod(getFramePeriod());
+            BezierDrawer.setFramePeriod(getFramePeriod());
             setFPSString();
         });
         gridBagConstraints = new GridBagConstraints();
@@ -323,7 +323,7 @@ public final class Setup {
         curvePointAmountSpinner = new JSpinner(new SpinnerNumberModel(1000, 0, Long.MAX_VALUE, 1));
         curvePointAmountSpinner.addChangeListener((ChangeEvent e) -> {
 
-            BézierDrawer.setCurveStep(getCurveStep());
+            BezierDrawer.setCurveStep(getCurveStep());
         });
         gridBagConstraints = new GridBagConstraints();
         gridBagConstraints.anchor = NORTH;
@@ -334,7 +334,7 @@ public final class Setup {
         gridBagConstraints.insets = new Insets(0, SPACE_INT, SPACE_HALF_INT, SPACE_HALF_INT);
         gridBagConstraints.weighty = 1;
         frame.getContentPane().add(curvePointAmountSpinner, gridBagConstraints);
-        BézierDrawer.setCurveStep(getCurveStep());
+        BezierDrawer.setCurveStep(getCurveStep());
 
         JLabel pointIndexLabel = new JLabel("point index:");
         pointIndexLabel.setEnabled(false);
@@ -505,12 +505,14 @@ public final class Setup {
                 "point", "screen x", "screen y", "output x", "output y", "color"
             }
         ) {
-            Class[] types = new Class [] {
+            private static final long serialVersionUID = 4274907062935581071L;
+
+            Class<?>[] types = new Class[] {
                 String.class, Integer.class, Integer.class, Double.class, Double.class, Integer[].class
             };
 
             @Override
-            public Class getColumnClass(int columnIndex) {
+            public Class<?> getColumnClass(int columnIndex) {
                 return types [columnIndex];
             }
 
@@ -530,6 +532,8 @@ public final class Setup {
             private int color[];
 
             private Component component;
+
+            private static final long serialVersionUID = -663050304132549168L;
 
             @Override
             public Font getFont() {

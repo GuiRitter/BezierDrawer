@@ -1,4 +1,4 @@
-package io.github.guiritter.bézier_drawer;
+package io.github.guiritter.bezier_drawer;
 
 import java.awt.Dimension;
 import java.awt.Font;
@@ -20,9 +20,9 @@ import javax.swing.UIManager;
  * at the same time, such as the control points.
  * @author Guilherme Alan Ritter
  */
-public final class BézierDrawer {
+public final class BezierDrawer {
 
-    private static final LinkedList<Point> BézierControlPointList = new LinkedList();
+    private static final LinkedList<Point> BézierControlPointList = new LinkedList<>();
 
     private static int color[];
 
@@ -50,7 +50,7 @@ public final class BézierDrawer {
      * Time step used to compute the curve. Inverse to the amount of points
      * in the curve.
      */
-    private static final Wrapper step = new Wrapper();
+    private static final Wrapper<Double> step = new Wrapper<>();
 
     /**
      * Distance between graphical user interface components.
@@ -135,12 +135,12 @@ public final class BézierDrawer {
      * @param step time step
      * @param point curve color wrapper
      */
-    static void getRenderData(LinkedList<Point> list, Wrapper step, Point point) {
+    static void getRenderData(LinkedList<Point> list, Wrapper<Double> step, Point point) {
         semaphore.acquireUninterruptibly();
         list.clear();
         list.addAll(BézierControlPointList);
-        step.value = BézierDrawer.step.value;
-        System.arraycopy(BézierDrawer.curveColor, 0, point.color, 0, 4);
+        step.value = BezierDrawer.step.value;
+        System.arraycopy(BezierDrawer.curveColor, 0, point.color, 0, 4);
         semaphore.release();
     }
 
@@ -170,7 +170,7 @@ public final class BézierDrawer {
      */
     static void setCurveStep(double step) {
         semaphore.acquireUninterruptibly();
-        BézierDrawer.step.value = step;
+        BezierDrawer.step.value = step;
         semaphore.release();
     }
 

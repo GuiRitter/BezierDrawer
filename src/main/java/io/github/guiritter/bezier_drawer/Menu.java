@@ -1,8 +1,8 @@
-package io.github.guiritter.bézier_drawer;
+package io.github.guiritter.bezier_drawer;
 
-import static io.github.guiritter.bézier_drawer.BézierDrawer.getPointAmount;
-import static io.github.guiritter.bézier_drawer.BézierDrawer.removePoint;
-import static io.github.guiritter.bézier_drawer.BézierDrawer.setCurveColor;
+import static io.github.guiritter.bezier_drawer.BezierDrawer.getPointAmount;
+import static io.github.guiritter.bezier_drawer.BezierDrawer.removePoint;
+import static io.github.guiritter.bezier_drawer.BezierDrawer.setCurveColor;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.image.WritableRaster;
@@ -35,20 +35,11 @@ import javax.swing.SpinnerNumberModel;
  */
 public final class Menu {
 
-    private final WritableRaster backgroundRaster;
-
     private final JFileChooser chooser = new JFileChooser();
 
     private final int colorInt[] = new int[4];
 
     private Color colorColor;
-
-    private final Edit edit;
-
-    /**
-     * Curve display area frame.
-     */
-    private final JFrame editFrame;
 
     /**
      * Right click menu items that do not relate to control points.
@@ -56,8 +47,6 @@ public final class Menu {
     private final LinkedList<JMenuItem> elseItemList = new LinkedList<>();
 
     private File file;
-
-    private final Handler handler;
 
     private final Point lastPoint = new Point(0, 0, colorInt, 0);
 
@@ -67,9 +56,6 @@ public final class Menu {
 
     private int option;
 
-    private Point point;
-
-
     /**
      * Right click menu items that relate to control points.
      */
@@ -77,11 +63,7 @@ public final class Menu {
 
     final Semaphore pointSelectedSemaphore;
 
-    private final WrapperPoint pointSelectedWrapper;
-
     private final PositionPanel positionPanel;
-
-    private final Setup setup;
 
     private final JSpinner spinner = new JSpinner();
 
@@ -99,16 +81,12 @@ public final class Menu {
      Semaphore pointSelectedSemaphore,
      WrapperPoint pointSelectedWrapper
     ) {
-        this.edit = edit;
-        this.setup = setup;
-        this.editFrame = editFrame;
-        this.handler = handler;
-        this.backgroundRaster = backgroundRaster;
         this.lastPointTransient = lastPoint;
         this.pointSelectedSemaphore = pointSelectedSemaphore;
-        this.pointSelectedWrapper = pointSelectedWrapper;
         positionPanel = new PositionPanel(width, height);
         menu = new JPopupMenu(){
+
+            private static final long serialVersionUID = -8132641424283398824L;
 
             @Override
             public void setVisible(boolean b) {

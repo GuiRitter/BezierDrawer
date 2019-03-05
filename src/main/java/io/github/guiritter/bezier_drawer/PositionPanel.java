@@ -1,6 +1,6 @@
-package io.github.guiritter.bézier_drawer;
+package io.github.guiritter.bezier_drawer;
 
-import static io.github.guiritter.bézier_drawer.BézierDrawer.SPACE_DIMENSION;
+import static io.github.guiritter.bezier_drawer.BezierDrawer.SPACE_DIMENSION;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import static javax.swing.BoxLayout.PAGE_AXIS;

@@ -1,6 +1,6 @@
-package io.github.guiritter.bézier_drawer;
+package io.github.guiritter.bezier_drawer;
 
-import io.github.guiritter.imagecomponent.ImageComponentMultiple;
+import io.github.guiritter.image_component.ImageComponentMultiple;
 import static java.awt.Frame.MAXIMIZED_BOTH;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
@@ -25,16 +25,11 @@ import static javax.swing.JOptionPane.WARNING_MESSAGE;
  * or a picture.
  * @author Guilherme Alan Ritter
  */
-@SuppressWarnings("CallToPrintStackTrace")
 public final class Edit {
 
     private BufferedImage backgroundColorImage;
 
     private WritableRaster backgroundColorRaster;
-
-    private BufferedImage backgroundPictureImage;
-
-    private WritableRaster backgroundPictureRaster;
 
     private BufferedImage foregroundImage;
 
@@ -62,8 +57,6 @@ public final class Edit {
 
     private Renderer renderer;
 
-    private final Setup setup;
-
     /**
      * Runs the renderer at fixed intervals.
      */
@@ -77,9 +70,9 @@ public final class Edit {
     /**
      * Prints a stack trace and shows a dialog
      * displaying either a warning or an error.
-     * @param ex
-     * @param title
-     * @param messageType
+     * @param ex in order to know what happened and where
+     * @param title dialog title
+     * @param messageType dialog message
      */
     public void showDialog(Exception ex, String title, int messageType) {
         ex.printStackTrace();
@@ -89,7 +82,7 @@ public final class Edit {
     /**
      * Prints a stack trace and shows a dialog
      * displaying an error.
-     * @param ex
+     * @param ex in order to know what happened and where
      */
     public void showError(Exception ex) {
         showDialog(ex, "error", ERROR_MESSAGE);
@@ -98,7 +91,7 @@ public final class Edit {
     /**
      * Prints a stack trace and shows a dialog
      * displaying a warning.
-     * @param ex
+     * @param ex in order to know what happened and where
      */
     public void showWarning(Exception ex) {
         showDialog(ex, "warning", WARNING_MESSAGE);
@@ -126,7 +119,6 @@ public final class Edit {
     }
 
     public Edit(Setup setup) {
-        this.setup = setup;
         imageComponent = new ImageComponentMultiple();
         timer = new Timer(Renderer.class.getSimpleName());
 
@@ -180,7 +172,7 @@ public final class Edit {
             frame.getContentPane().add(imageComponent);
             frame.revalidate();
             frame.repaint();
-            setFramePeriod(BézierDrawer.getFramePeriod());
+            setFramePeriod(BezierDrawer.getFramePeriod());
             (new Thread(handler = new Handler(width, height, setup, backgroundColorRaster, pointSelectedSemaphore, pointSelectedWrapper))).start();
             imageComponent.setComponentPopupMenu((new Menu(width, height, this, setup, frame, handler, backgroundColorRaster, lastPoint, pointSelectedSemaphore, pointSelectedWrapper)).menu);
         });
