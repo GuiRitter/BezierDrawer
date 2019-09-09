@@ -4,6 +4,8 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import javax.swing.JFormattedTextField;
 
+import io.github.guiritter.fit_linear.FitLinear;
+
 /**
  * Updates the desired coordinate range converter
  * when the minimum and maximum values are changed.

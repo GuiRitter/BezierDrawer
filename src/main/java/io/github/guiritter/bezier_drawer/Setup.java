@@ -33,6 +33,8 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
+import io.github.guiritter.fit_linear.FitLinear;
+
 /**
  * Graphical user interface that sets up runtime parameters and displays a table
  * displaying the curve's control points. It's possible to change

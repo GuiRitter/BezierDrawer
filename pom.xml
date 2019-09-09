@@ -42,6 +42,12 @@
   <dependencies>
     <dependency>
       <groupId>com.github.GuiRitter</groupId>
+      <artifactId>FitLinear</artifactId>
+      <version>master-SNAPSHOT</version>
+    </dependency>
+
+    <dependency>
+      <groupId>com.github.GuiRitter</groupId>
       <artifactId>ImageComponent</artifactId>
       <version>master-SNAPSHOT</version>
     </dependency>
